@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Doughnut } from "react-chartjs-2";
-import { ChatState } from "../../../Context/AuthProvider";
 import { randomIntFromInterval } from "../../../util/randomNumber";
 import CreateUser from "../../../components/Brand/User/Create-User";
 import Details from "../../../components/Brand/User/Details";
@@ -10,7 +9,7 @@ import axios from "axios";
 
 function Index({ userData }) {
   const [open, setOpen] = useState(false);
-  const [allUser, setAllUser] = useState(userData)
+  const [allUser, setAllUser] = useState([userData])
   const [profileView, setProfileView] = useState(false);
   const [userDetail, setUserDetail] = useState({})
 
@@ -102,7 +101,7 @@ function Index({ userData }) {
                       textTransform: "uppercase",
                     }}
                   >
-                    {item.vender_name.match(/\b(\w)/g).slice(0, 2)}
+                    {item?.vender_name.match(/\b(\w)/g).slice(0, 2)}
                   </span>
                   <div>
                     <span className="px-2.5 py-0.5 bg-green100 rounded-[28px] text-green600 text-[13px] font-medium leading-5">
@@ -113,7 +112,7 @@ function Index({ userData }) {
                 <div className="flex space-x-5 items-center mt-2">
                   <h1 className="text-black500 font-bold text-[31px] leading-[46px] flex">
                     {/* <img src="/assets/icons/n.svg" /> */}
-                    {item.vender_name}
+                    {item?.vender_name}
                   </h1>
                 </div>
                 <div className="mt-[15px]">
@@ -131,18 +130,18 @@ function Index({ userData }) {
     </main>
   )
 }
-export const getServerSideProps = async ({ req, res }) => {
-  const data = await axios.get(
-    `${BASE_URL}api/vender`, {
-    headers: {
-      'x-access-token': req.cookies.token
-    }
-  }
-  )
-  return {
-    props: {
-      userData: data.data
-    },
-  };
-};
+// export const getServerSideProps = async ({ req, res }) => {
+//   const data = await axios.get(
+//     `${BASE_URL}api/vender`, {
+//     headers: {
+//       'x-access-token': req.cookies.token
+//     }
+//   }
+//   )
+//   return {
+//     props: {
+//       userData: data.data
+//     },
+//   };
+// };
 export default Index

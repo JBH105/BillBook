@@ -1,7 +1,9 @@
 import { useRouter } from "next/router";
 import Layout from "../components/HandleLayout/index";
 import "../styles/globals.css";
-import AuthProvider from "../Context/AuthProvider";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import store, { persistor } from "../Redux/store";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
@@ -14,15 +16,19 @@ function MyApp({ Component, pageProps }) {
     router.pathname == "/brand/onboarding/personaldetail" ||
     router.pathname == "/brand/onboarding/companyinformation" ||
     router.pathname == "/brand/onboarding/connections" ? (
-    <AuthProvider>
-      <Component {...pageProps} />
-    </AuthProvider>
-  ) : (
-    <AuthProvider>
-      <Layout>
+    <Provider store={store}>
+      <PersistGate loading={<h1>hello</h1>} persistor={persistor}>
         <Component {...pageProps} />
-      </Layout>
-    </AuthProvider>
+      </PersistGate>
+    </Provider>
+  ) : (
+    <Provider store={store}>
+      <PersistGate loading={<h1>hello</h1>} persistor={persistor}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </PersistGate>
+    </Provider>
   );
 }
 
