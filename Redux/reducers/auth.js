@@ -4,6 +4,7 @@ const initialState = {
   category: [],
   getCategory: [],
   deleteToken: [],
+  userSignupData: []
 };
 
 const productReducers = (state = initialState, action) => {
@@ -68,5 +69,13 @@ export const getMainCategory = (state = initialState, action) => {
     // break;
   }
 };
-
+export const getUserSignupData = (state = initialState, action) => {
+  switch (action.type) {
+    case "USER_DETAILS":
+      return { ...state, userSignupData: action.payload };
+    default:
+      return state;
+      break;
+  }
+};
 export default productReducers;

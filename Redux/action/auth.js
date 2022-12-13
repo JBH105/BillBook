@@ -38,3 +38,12 @@ export const logIn = (data) => {
     }
   };
 };
+export const userSignUpDetails = (data) => {
+  console.log("🚀 ~ file: auth.js:42 ~ userSignUpDetails ~ data", data)
+  return async (dispatch) => {
+    return dispatch({
+      type: "USER_DETAILS",
+      payload: data
+    })
+  }
+}
