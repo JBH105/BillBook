@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import axios from "axios";
 
 function Signup() {
   const router = useRouter();
@@ -14,14 +15,29 @@ function Signup() {
   };
 
   const handleSubmit = async (values) => {
+    const user = {username:values.name,email:values.email,password:values.password}
+    console.log("🚀 ~ file: signup.js:20 ~ handleSubmit ~ user", user)
+    await axios.post(`${BASE_URL}signup`, user)
+      .then((respons) => {
+        console.log("🚀 ~ file: signup.js:22 ~ .then ~ respons", respons)
+        // if (respons.data.token) {
+        //   setUser(respons.data.user);
+        //   router.push('/brand/dashbord')
+        // } else {
+        //   console.log(respons.data);
+        // }
+      }).catch((error) => {
+        console.log(error);
+      }
+      )
   } 
 
   const reg = /^[\w.+\-]+@(?!(gmail|hotmail|yahoo|aol)).*\.com$/;
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required!"),
     email: Yup.string()
-      .required("Email Id is required!")
-      .matches(reg, "Please enter a business email address"),
+      .required("Email Id is required!"),
+      // .matches(reg, "Please enter a business email address"),
     password: Yup.string().required("Must be at least 8 characters.").min(8),
     remember: Yup.string().required("Terms of service is required!"),
   });

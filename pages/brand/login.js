@@ -3,21 +3,37 @@ import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { ChatState } from "../../Context/AuthProvider";
+import axios from "axios";
+import BASE_URL from "../../Api";
+import { useRouter } from "next/router";
 
 const Login = () => {
-  const { user, allUser } = ChatState();
+
+  const router = useRouter()
+  const { user, setUser } = ChatState();
   const initialValues = {
     email: "",
     password: "",
   };
   const validationSchema = Yup.object({
     email: Yup.string().required("Email Id is required!").email(),
-    password: Yup.string().required("Must be at least 8 characters.").min(8),
+    password: Yup.string().required("Must be at least 4 characters.").min(4),
   });
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (values) => {
-    console.log("🚀 ~ file: login.js:14 ~ handleSubmit ~ values", values);
+    await axios.post(`${BASE_URL}login`, values)
+      .then((respons) => {
+        if (respons.data.token) {
+          setUser(respons.data.user);
+          router.push('/brand/dashboard')
+        } else {
+          console.log(respons.data);
+        }
+      }).catch((error) => {
+        console.log(error);
+      }
+      )
   };
   return (
     <div className=" min-h-screen grid bg-white lg:grid-cols-2 lg:col-rows-1">

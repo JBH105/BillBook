@@ -1,5 +1,5 @@
 // url
- const URL = "http://api-staging.buzzbite.io/";
+ const URL = "https://api.giantwhale.online/";
 // base url
  const BASE_URL = URL
 

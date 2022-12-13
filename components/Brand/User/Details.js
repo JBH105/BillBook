@@ -145,7 +145,7 @@ const tab = [
   { name: "Profile" },
 ];
 
-export default function Details({ profileView, setProfileView }) {
+export default function Details({ profileView, setProfileView, userDetail }) {
   const [openTab, setOpenTab] = React.useState(0);
 
   return (
@@ -191,27 +191,23 @@ export default function Details({ profileView, setProfileView }) {
 
                   <div className="mt-[30px]">
                     <div className="md:flex md:space-x-5">
-                      {/* <div className="">
-                        <img
-                          src="/assets/images/dapo-1.png"
-                          className="w-[107px] h-[110px] rounded-full mx-auto md:ml-0 "
-                        />
-                      </div> */}
                       <div
                         className="text-[40px] rounded-full text-center w-[107px] h-[110px] rounded-full mx-auto md:ml-0 grid items-center"
                         style={{
                           background: randomIntFromInterval(0, 9),
                           color: "white",
+                          textTransform: "uppercase",
                         }}
                       >
-                        JB
-                        {/* {person.name.match(/\b(\w)/g).slice(0, 2)} */}
+                        {/* JB */}
+                        {userDetail && userDetail.vender_name && userDetail.vender_name.slice(0, 2)}
                       </div>
                       <div className="flex-1">
                         <div>
                           <div className="md:flex items-center space-y-2 md:space-y-0 mt-3 md:mt-0 justify-between">
                             <h2 className="text-[17px] text-center md:text-left font-semibold text-black500 leading-[26px]">
-                              Jonathon B.
+                              {/* Jonathon B. */}
+                              {userDetail.vender_name}
                             </h2>
                           </div>
                           <div className="space-y-2 md:space-y-0">
@@ -232,7 +228,7 @@ export default function Details({ profileView, setProfileView }) {
                                 className="mr-1"
                               />
                               <span className="text-black400 text-xs font-medium leading-[18px]">
-                                9714024077
+                                {userDetail._id}
                               </span>
                             </div>
                           </div>
@@ -254,22 +250,20 @@ export default function Details({ profileView, setProfileView }) {
                             }}
                             key={item.index}
                             href={item.href}
-                            className={`${
-                              openTab === index
-                                ? " font-semibold text-violet600"
-                                : " font-medium text-black300  group-hover:text-violet600 "
-                            } whitespace-nowrap text-xs sm:text-[15px]  leading-[22px]`}
+                            className={`${openTab === index
+                              ? " font-semibold text-violet600"
+                              : " font-medium text-black300  group-hover:text-violet600 "
+                              } whitespace-nowrap text-xs sm:text-[15px]  leading-[22px]`}
                             aria-current={item.current ? "page" : undefined}
                           >
                             {item.name}
                           </a>
                           <div className="flex mt-1.5 justify-center">
                             <div
-                              className={`${
-                                openTab === index
-                                  ? "block"
-                                  : "hidden group-hover:block"
-                              } w-[40px] h-[2.5px] bg-violet600 rounded-full`}
+                              className={`${openTab === index
+                                ? "block"
+                                : "hidden group-hover:block"
+                                } w-[40px] h-[2.5px] bg-violet600 rounded-full`}
                             ></div>
                           </div>
                         </div>

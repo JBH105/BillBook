@@ -7,10 +7,16 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState();
   const router = useRouter();
   useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userData"));
-    // setUser(userInfo?.user);
-    // if (!userInfo) router.push("/brand/login");
-  }, [router]);
+    if (user) {
+      fetch("/api/set_cookie", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+    }
+  }, [user]);
 
   return (
     <AuthContext.Provider
