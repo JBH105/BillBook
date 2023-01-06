@@ -7,7 +7,7 @@ import axios from "axios";
 //  export default BASE_URL
 
 export default axios.create({
-  baseURL: "https://api.giantwhale.online",
+  baseURL: "http://localhost:8000",
   timeout: 1000,
-//   headers: { "x-access-token": sessionStorage.getItem("x-access-token") },
+  // headers: { "x-access-token": token },
 });

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
@@ -8,6 +8,7 @@ import { IoFlash } from "react-icons/io5";
 import { SlEarphonesAlt } from "react-icons/sl";
 import { TbLogout } from "react-icons/tb";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -22,35 +23,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       icon2: "/assets/icons/Dashboard.svg",
     },
     {
-      name: "Trend",
-      href: "/brand/trend",
-      icon1: "/assets/icons/trand-white.svg",
-      icon2: "/assets/icons/grow.svg",
-    },
-    {
-      name: "Campaigns",
-      href: "/brand/campaigns",
-      href2: "/brand/campaigns/newcampaigns",
-      icon2: "/assets/icons/speak-dark.svg",
-      icon1: "/assets/icons/speak.svg",
-    },
-    {
       name: "Influencers",
       href: "/brand/influencersearch",
       icon1: "/assets/icons/people-white.svg",
       icon2: "/assets/icons/people-outline.svg",
-    },
-    {
-      name: "Wallet",
-      href: "/brand/wallet",
-      icon1: "/assets/icons/Wallet-fill-white.svg",
-      icon2: "/assets/icons/walletside.svg",
-    },
-    {
-      name: "Message",
-      href: "#",
-      icon1: "/assets/icons/message-white.svg",
-      icon2: "/assets/icons/massges.svg",
     },
     {
       name: "User",
@@ -72,6 +48,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       icon1: "/assets/icons/speak.svg",
     },
   ];
+  const HendleLogOut = () => {
+    sessionStorage.removeItem("x-access-token");
+    router.push("/brand/login");
+  };
   return (
     <>
       <div className="hidden md:fixed md:inset-y-0 md:flex md:w-[262px] md:flex-col">
@@ -161,16 +141,18 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               />
               Help & Support
             </a>
-            <a
-              className="text-gray-400 hover:text-white group cursor-pointer hover:font-semibold flex items-center  text-[15px] font-medium rounded-md"
-              href="/brand/login"
-            >
-              <img
-                src="/assets/icons/logout.svg"
-                className="mr-4 h-5 w-5 flex-shrink-0 "
-                aria-hidden="true"
-              />
-              Logout
+            <a className="text-gray-400 hover:text-white group cursor-pointer hover:font-semibold flex items-center  text-[15px] font-medium rounded-md">
+              <div
+                className="text-gray-400 hover:text-white group cursor-pointer hover:font-semibold flex items-center  text-[15px] font-medium rounded-md"
+                onClick={HendleLogOut}
+              >
+                <img
+                  src="/assets/icons/logout.svg"
+                  className="mr-4 h-5 w-5 flex-shrink-0 "
+                  aria-hidden="true"
+                />
+                Logout
+              </div>
             </a>
           </div>
         </div>

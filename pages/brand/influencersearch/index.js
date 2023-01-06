@@ -17,12 +17,14 @@ import {
   ChevronDownIcon,
   StarIcon,
 } from "@heroicons/react/20/solid";
-// import ReactApexChart from "react-apexcharts";
 import dynamic from "next/dynamic";
 // const ReactApexChart =dynamic()
-const ReactApexChart = dynamic(() => import("react-apexcharts"), {
-  ssr: false,
-});
+const ReactApexChart = dynamic(
+  () => {
+    return import("react-apexcharts");
+  },
+  { ssr: false }
+);
 const city = [
   { label: "Andalusia", value: "Andalusia" },
   { label: "Anniston", value: "Anniston" },
@@ -329,7 +331,8 @@ function SamplePrevArrow(props) {
   );
 }
 const animatedComponents = makeAnimated();
-const InfluencerSearch = () => {
+
+export default function InfluencerSearch() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileView, setProfileView] = useState(false);
   const [audience, setAudience] = useState(true);
@@ -347,7 +350,6 @@ const InfluencerSearch = () => {
     maximum: "",
   });
   const [selectRowAll, setSelectRowAll] = useState(false);
- 
 
   const ClearAll = () => {
     setSelectedMedia([]);
@@ -863,7 +865,11 @@ const InfluencerSearch = () => {
 
             <div className="mt-2 flex flex-col">
               <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div className={`${isCheck.length > 0 ? 'mt-6' :''} inline-block min-w-full py-2 align-middle md:px-6 lg:px-8 `}>
+                <div
+                  className={`${
+                    isCheck.length > 0 ? "mt-6" : ""
+                  } inline-block min-w-full py-2 align-middle md:px-6 lg:px-8 `}
+                >
                   <div className="overflow-hidden ">
                     <table className="min-w-full ">
                       <thead className="bg-white">
@@ -874,11 +880,10 @@ const InfluencerSearch = () => {
                                 <input
                                   type="checkbox"
                                   onClick={(person) => {
-                                    
                                     setIsCheckAll(!selectRowAll);
                                     handleSelectAll();
                                   }}
-                               checked={isCheck.length === 7}
+                                  checked={isCheck.length === 7}
                                   className="custom-checkbox absolute left-4 top-1/2 -mt-2 h-4 w-4 bg-white text-[#090415] rounded-[2.8px] accent-violet600 border-gray-300 text-violet600 focus:ring-0 sm:left-6"
                                 />
                               ) : (
@@ -1000,7 +1005,6 @@ const InfluencerSearch = () => {
                                 id={person.id}
                                 onChange={(e) => handleClick(e)}
                                 checked={isCheck.includes(person.id)}
-                             
                                 className="absolute custom-checkbox left-4 top-1/2 -mt-2 h-4 w-4 bg-white text-[#090415] rounded-[2.8px] accent-violet600 border-gray-300 text-violet600 focus:ring-0 sm:left-6"
                               />
                             </td>
@@ -2509,6 +2513,4 @@ const InfluencerSearch = () => {
       </Transition.Root>
     </>
   );
-};
-
-export default InfluencerSearch;
+}

@@ -8,16 +8,9 @@ import {
   ChevronDownIcon,
   ChevronUpDownIcon,
 } from "@heroicons/react/20/solid";
-const Country = [
-  { id: 1, name: "Country" },
-  { id: 2, name: "Palmer " },
-  { id: 3, name: "Anniston" },
-  { id: 4, name: "Atmore" },
-  { id: 5, name: "Andalusia" },
-  { id: 6, name: "Prescott" },
-  { id: 7, name: "Arkadelphia" },
-  { id: 8, name: "Alameda" },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { addTransaction } from "../../../Redux/action/transaction";
+
 const Currency = [
   { id: 0, name: "Currency" },
   { id: 1, name: "INR(Cash)" },
@@ -38,7 +31,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 export default function Index() {
-  const [country, setCountry] = useState(Country[0]);
+  const dispatch = useDispatch();
+  const vender = useSelector((state) => state.vender.vender);
+  const [country, setCountry] = useState(vender[0]);
   const [transactionType, setTransactionType] = useState(Transaction[0]);
   const [currency, setCurrency] = useState(Currency[0]);
 
@@ -54,7 +49,13 @@ export default function Index() {
   });
 
   const handleButton = (value) => {
-    console.log(value, "-=-==-=-=-=-");
+    value.venderName = country.id;
+    value.transactionType = transactionType.name;
+    value.currency = currency.name;
+    value.rate = value.Quantity;
+    value.amount = value.price;
+    value.transactionDate = value.date;
+    dispatch(addTransaction(value));
   };
   return (
     <main className="bg-main-bg px-4 sm:px-6 lg:px-[60px]">
@@ -105,7 +106,7 @@ export default function Index() {
                                         : " font-medium leading-[22px] text-black600 "
                                     }"block truncate "`}
                                   >
-                                    {country.name}
+                                    {country.fullName}
                                   </span>
                                   <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                                     <ChevronDownIcon
@@ -123,7 +124,7 @@ export default function Index() {
                                   leaveTo="opacity-0"
                                 >
                                   <Listbox.Options className="absolute selectpalceholde z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                    {Country.map((person) => (
+                                    {vender.map((person) => (
                                       <Listbox.Option
                                         key={person.id}
                                         className={({ active }) =>
@@ -146,7 +147,7 @@ export default function Index() {
                                                 "block truncate"
                                               )}
                                             >
-                                              {person.name}
+                                              {person.fullName}
                                             </span>
 
                                             {country ? (

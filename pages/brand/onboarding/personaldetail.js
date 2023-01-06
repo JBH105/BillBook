@@ -5,54 +5,52 @@ import * as Yup from "yup";
 import { Fragment, useRouter } from "next/router";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
-import { userSignUpDetails } from "../../../Redux/action/auth";
+import {
+  createUserDetails,
+  userSignUpDetails,
+} from "../../../Redux/action/auth";
 import { useDispatch, useSelector } from "react-redux";
 
-const Personaldetail = () => {
-  const userSignupData = useSelector(state => state.getUserSignupData.userSignupData)
-  console.log("🚀 ~sdd file: signup.js:12 ~ Signup ~ userSignupData", userSignupData)
-  const dispatch = useDispatch()
+export default function Personaldetail() {
+  const userSignupData = useSelector((state) => state.userDetails.userDetails);
+  const dispatch = useDispatch();
   const [image, setImage] = useState();
   const router = useRouter();
   const initialValues = {
     name: "",
     phone: "",
     companyName: "",
-    website: ""
+    website: "",
   };
 
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required!"),
     phone: Yup.string().required("Phone Number is required!").min(10),
     companyName: Yup.string().required("Company Name is required!"),
-    website: Yup.string()
+    website: Yup.string(),
   });
   const handleSubmit = async (values) => {
-    values.image = image
-    await dispatch(userSignUpDetails({ ...userSignupData, PersonalDetails: values }))
+    await dispatch(
+      createUserDetails({ ...userSignupData, PersonalDetails: values })
+    );
+
+    let formData = new FormData();
+    formData.append("image", image);
+    formData.append("name", userSignupData.name);
+    formData.append("email", userSignupData.email);
+    formData.append("password", userSignupData.password);
+
+    // userSignupData.image = formData;
+    await dispatch(userSignUpDetails(formData));
     router.push("/brand/login");
-  }
+  };
   return (
     <div className=" min-h-screen grid bg-white lg:grid-cols-2 lg:col-rows-1">
-      <div className="relative hidden lg:flex items-center after:top-0 after:bottom-0 after:opacity-60 after:left-0 after:right-0  after:absolute after:content-[' ']  after:bg-violet600">
-        <div className="p-[60px] pt-[190px]  relative z-[8] ">
-          <h1 className="text-[32px] leading-[50px]  mb-10 font-semibold text-white">
-            Turn Your Impressions And Engagements Into Earnings
-          </h1>
-          <p className="text-[#E2D7F9] text-[15px] font-medium leanding-[22px]">
-            Create a free account and get full access hundreds of influecer
-            jobs. Trusted by 5000+ Influencers.
-          </p>
-        </div>
+      <div className="hidden lg:flex items-center after:top-0 after:bottom-0 after:opacity-60 after:left-0 after:right-0 ">
         <img
-          className="absolute inset-0 h-full w-full object-cover"
-          src="/assets/images/Branding&Lifestyle.png"
-          alt="Branding&Lifestyle"
-        />
-        <img
-          src="/assets/images/Logo.svg"
-          alt="logo"
-          className="absolute z-[1] top-[55px] left-[60px]"
+          className="h-full w-full"
+          src="/assets/login.svg"
+          alt="Branding"
         />
       </div>
 
@@ -61,7 +59,7 @@ const Personaldetail = () => {
         validationSchema={validationSchema}
         enableReinitialize={true}
         onSubmit={async (values) => {
-          await handleSubmit(values)
+          await handleSubmit(values);
         }}
       >
         {(formik) => {
@@ -165,38 +163,50 @@ const Personaldetail = () => {
                         </div>
                       </div>
                       <div>
-                        <label htmlFor="email" className="block text-[13px] font-medium text-gray700">
+                        <label
+                          htmlFor="email"
+                          className="block text-[13px] font-medium text-gray700"
+                        >
                           Company Name
                         </label>
                         <div className="mt-1">
                           <Field
                             id="companyName"
                             name="companyName"
-                            placeholder='Enter your ompany name'
+                            placeholder="Enter your ompany name"
                             type="text"
                             className="block bg-white text-[#090415] w-full h-[48px] appearance-none rounded border border-slate-300 px-3 py-2 placeholder-gray-400 placeholder:italic focus:border-slate-300 focus:outline-none focus:ring-slate-300 sm:text-[15px] font-medium"
                           />
                           <div style={{ color: "red" }}>
                             <ErrorMessage
-                              name="companyName" component="span" className='error text-[13px] font-medium leanding-[20px] text-red500' />
+                              name="companyName"
+                              component="span"
+                              className="error text-[13px] font-medium leanding-[20px] text-red500"
+                            />
                           </div>
                         </div>
                       </div>
                       <div>
-                        <label htmlFor="email" className="block text-[13px] font-medium text-gray700">
+                        <label
+                          htmlFor="email"
+                          className="block text-[13px] font-medium text-gray700"
+                        >
                           Company Website
                         </label>
                         <div className="mt-1">
                           <Field
                             id="website"
                             name="website"
-                            placeholder='Website link'
+                            placeholder="Website link"
                             type="text"
                             className="block bg-white text-[#090415] w-full h-[48px] appearance-none rounded border border-slate-300 px-3 py-2 placeholder-gray-400 placeholder:italic focus:border-slate-300 focus:outline-none focus:ring-slate-300 sm:text-[15px] font-medium"
                           />
                           <div style={{ color: "red" }}>
                             <ErrorMessage
-                              name="website" component="span" className='error text-[13px] font-medium leanding-[20px] text-red500' />
+                              name="website"
+                              component="span"
+                              className="error text-[13px] font-medium leanding-[20px] text-red500"
+                            />
                           </div>
                         </div>
                       </div>
@@ -226,6 +236,4 @@ const Personaldetail = () => {
       </Formik>
     </div>
   );
-};
-
-export default Personaldetail;
+}

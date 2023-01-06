@@ -4,13 +4,14 @@ const initialState = {
   category: [],
   getCategory: [],
   deleteToken: [],
-  userSignupData: []
+  userSignupData: [],
+  error: [],
+  userDetails: [],
 };
 
 const productReducers = (state = initialState, action) => {
   switch (action.type) {
     case "CREATE_USER":
-      // console.log(action.payload ,"action.payloadaction.payloadaction.payloadaction.payload")
       return { ...state, user: action.payload };
     default:
       return state;
@@ -25,12 +26,28 @@ export const logIn = (state = initialState, action) => {
         ...state,
         user: action.payload,
       };
+    case "SIGNUP_USER":
+      return {
+        ...state,
+        user: action.payload,
+      };
     case "SET_LOADING":
-      return { ...state, user: action.payload };
+      return { ...state, error: action.payload };
 
     default:
       return state;
       break;
+  }
+};
+
+export const userDetails = (state = initialState, action) => {
+  switch (action.type) {
+    case "USER_DETAILS":
+      return { ...state, userDetails: action.payload };
+    case "SET_LOADING":
+      return { ...state, error: action.payload };
+    default:
+      return state;
   }
 };
 

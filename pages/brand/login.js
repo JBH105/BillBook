@@ -2,17 +2,18 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
-import BASE_URL from "../../Api";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { logIn } from "../../Redux/action/auth";
 
-const Login = () => {
-  const state = useSelector(state => state.logIn.user)
-  console.log(state,"statstsatstststs");
+export default function Login() {
+  const state = useSelector((state) => {
+    return state.logIn.user;
+  });
   const dispatch = useDispatch();
   const router = useRouter();
+  const userError = useSelector((state) => state.logIn.error);
+  const [error, setError] = useState();
   const initialValues = {
     email: "",
     password: "",
@@ -22,32 +23,25 @@ const Login = () => {
     password: Yup.string().required("Must be at least 4 characters.").min(4),
   });
   const [showPassword, setShowPassword] = useState(false);
-
   const handleSubmit = async (values) => {
     await dispatch(logIn(values));
+    const token = sessionStorage.getItem("x-access-token");
+    if (token) {
+      router.push("/brand/dashboard");
+      setError(" ");
+    } else {
+      setError(userError.error);
+    }
   };
   return (
     <div className=" min-h-screen grid bg-white lg:grid-cols-2 lg:col-rows-1">
-      <div className="relative hidden lg:flex items-center after:top-0 after:bottom-0 after:opacity-60 after:left-0 after:right-0  after:absolute after:content-[' ']  after:bg-violet600">
-        <div className="p-[60px] pt-[190px]  relative z-[8] ">
-          <h1 className="text-[32px] leading-[50px]  mb-10 font-semibold text-white">
-            Turn Your Impressions And Engagements Into Earnings
-          </h1>
-          <p className="text-[#E2D7F9] text-[15px] font-medium leanding-[22px]">
-            Create a free account and get full access hundreds of influecer
-            jobs. Trusted by 5000+ Influencers.
-          </p>
-        </div>
+      <div className="hidden lg:flex items-center after:top-0 after:bottom-0  ">
         <img
-          className="absolute inset-0 h-full w-full object-cover"
-          src="/assets/images/Branding&Lifestyle.png"
+          className="h-full w-full"
+          src="/assets/login.svg"
           alt="Branding&Lifestyle"
         />
-        <img
-          src="/assets/images/Logo.svg"
-          alt="logo"
-          className="absolute z-[1] top-[55px] left-[60px]"
-        />
+        
       </div>
       <div className="flex  flex-col justify-center items-center px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-[134px]">
         <div className="mx-auto w-full ">
@@ -59,6 +53,7 @@ const Login = () => {
               We’re happy to see you again. To use your account, login first
             </p>
           </div>
+          <div className="text-red-600 mt-4">{error}</div>
           <div className="mt-14">
             <Formik
               initialValues={initialValues}
@@ -200,6 +195,4 @@ const Login = () => {
       </div>
     </div>
   );
-};
-
-export default Login;
+}

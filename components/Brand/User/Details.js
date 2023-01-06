@@ -1,4 +1,4 @@
-import React, { Fragment, useState, Component } from "react";
+import React, { Fragment, useState, Component, useEffect } from "react";
 import {
   Disclosure,
   Dialog,
@@ -16,44 +16,8 @@ import RecentHistory from "./UserTab/RecentHistory";
 import RecentTransaction from "./UserTab/RecentTransaction";
 import { randomIntFromInterval } from "../../../util/randomNumber";
 import Profile from "./UserTab/profile";
-
-const settings = {
-  dots: false,
-  infinite: true,
-  speed: 500,
-
-  slidesToShow: 4,
-  slidesToScroll: 4,
-  initialSlide: 0,
-  autoplay: true,
-  nextArrow: <SampleNextArrow />,
-  prevArrow: <SamplePrevArrow />,
-  responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: 3,
-        slidesToScroll: 3,
-        infinite: true,
-      },
-    },
-    {
-      breakpoint: 768,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 2,
-        initialSlide: 2,
-      },
-    },
-    {
-      breakpoint: 480,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1,
-      },
-    },
-  ],
-};
+import { VenderTransaction } from "../../../Redux/action/transaction";
+import { useDispatch } from "react-redux";
 
 function SampleNextArrow(props) {
   const { className, style, onClick } = props;
@@ -99,42 +63,6 @@ function SamplePrevArrow(props) {
     </div>
   );
 }
-const ratecard = [
-  {
-    icon: "/assets/icons/post.svg",
-    name: "Post/Tweet",
-    rate: "$50.00",
-  },
-  {
-    icon: "/assets/icons/gallery.svg",
-    name: "Photo Carousel",
-    rate: "$50.00",
-  },
-  {
-    icon: "/assets/icons/Story.svg",
-    name: "Story",
-    rate: "$32.00",
-  },
-  {
-    icon: "/assets/icons/Live.svg",
-    name: "Live Video",
-    rate: "$15.00",
-  },
-  {
-    icon: "/assets/icons/play-circle.svg",
-    name: "Video",
-    rate: "N/A",
-  },
-];
-
-const brandmentions = [
-  { no: "1.", icons: "/assets/icons/pepsi.png", name: "Pepsi" },
-  { no: "2.", icons: "/assets/icons/pepsi.png", name: "Samsung Galaxy" },
-  { no: "3.", icons: "/assets/icons/pepsi.png", name: "Pepsi" },
-  { no: "4.", icons: "/assets/icons/pepsi.png", name: "Pepsi" },
-  { no: "5.", icons: "/assets/icons/pepsi.png", name: "Pepsi" },
-];
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -146,8 +74,18 @@ const tab = [
 ];
 
 export default function Details({ profileView, setProfileView, userDetail }) {
+  const dispatch = useDispatch();
   const [openTab, setOpenTab] = React.useState(0);
+  const [page, setPage] = useState(1);
 
+  useEffect(() => {
+    HandleData();
+  }, [page, userDetail.id]);
+  const HandleData = async () => {
+    if (userDetail.id) {
+      dispatch(VenderTransaction({ id: userDetail?.id, page: page }));
+    }
+  };
   return (
     <div>
       {" "}
@@ -185,7 +123,7 @@ export default function Details({ profileView, setProfileView, userDetail }) {
                       <img src="/assets/icons/left-dark.svg" />
                     </button>
                     <h2 className="text-black600 font-semibold text-xl">
-                      Influencer’s Profile
+                      Vender’s Profile
                     </h2>
                   </div>
 
@@ -200,14 +138,16 @@ export default function Details({ profileView, setProfileView, userDetail }) {
                         }}
                       >
                         {/* JB */}
-                        {userDetail && userDetail.vender_name && userDetail.vender_name.slice(0, 2)}
+                        {userDetail &&
+                          userDetail.fullName &&
+                          userDetail.fullName.slice(0, 2)}
                       </div>
                       <div className="flex-1">
                         <div>
                           <div className="md:flex items-center space-y-2 md:space-y-0 mt-3 md:mt-0 justify-between">
                             <h2 className="text-[17px] text-center md:text-left font-semibold text-black500 leading-[26px]">
                               {/* Jonathon B. */}
-                              {userDetail.vender_name}
+                              {userDetail.fullName}
                             </h2>
                           </div>
                           <div className="space-y-2 md:space-y-0">
@@ -218,7 +158,7 @@ export default function Details({ profileView, setProfileView, userDetail }) {
                                   className="mr-1"
                                 />
                                 <span className="text-black400 text-xs font-medium leading-[18px]">
-                                  jaydeep@gmail.com
+                                  {userDetail.businessEmail}
                                 </span>
                               </div>
                             </div>
@@ -228,7 +168,7 @@ export default function Details({ profileView, setProfileView, userDetail }) {
                                 className="mr-1"
                               />
                               <span className="text-black400 text-xs font-medium leading-[18px]">
-                                {userDetail._id}
+                                {userDetail.phoneNumber}
                               </span>
                             </div>
                           </div>
@@ -250,20 +190,22 @@ export default function Details({ profileView, setProfileView, userDetail }) {
                             }}
                             key={item.index}
                             href={item.href}
-                            className={`${openTab === index
-                              ? " font-semibold text-violet600"
-                              : " font-medium text-black300  group-hover:text-violet600 "
-                              } whitespace-nowrap text-xs sm:text-[15px]  leading-[22px]`}
+                            className={`${
+                              openTab === index
+                                ? " font-semibold text-violet600"
+                                : " font-medium text-black300  group-hover:text-violet600 "
+                            } whitespace-nowrap text-xs sm:text-[15px]  leading-[22px]`}
                             aria-current={item.current ? "page" : undefined}
                           >
                             {item.name}
                           </a>
                           <div className="flex mt-1.5 justify-center">
                             <div
-                              className={`${openTab === index
-                                ? "block"
-                                : "hidden group-hover:block"
-                                } w-[40px] h-[2.5px] bg-violet600 rounded-full`}
+                              className={`${
+                                openTab === index
+                                  ? "block"
+                                  : "hidden group-hover:block"
+                              } w-[40px] h-[2.5px] bg-violet600 rounded-full`}
                             ></div>
                           </div>
                         </div>
@@ -271,9 +213,24 @@ export default function Details({ profileView, setProfileView, userDetail }) {
                     </nav>
                   </div>
                 </div>
-                {openTab === 0 && <RecentHistory openTab={0} />}
-                {openTab === 1 && <RecentTransaction openTab={1} />}
-                {openTab === 2 && <Profile openTab={1} />}
+                {openTab === 0 && (
+                  <RecentHistory openTab={0} setProfileView={setProfileView} />
+                )}
+                {openTab === 1 && (
+                  <RecentTransaction
+                    vender={userDetail}
+                    openTab={1}
+                    page={page}
+                    setPage={setPage}
+                  />
+                )}
+                {openTab === 2 && (
+                  <Profile
+                    openTab={1}
+                    ProfileData={userDetail}
+                    setProfileView={setProfileView}
+                  />
+                )}
               </Dialog.Panel>
             </Transition.Child>
           </div>

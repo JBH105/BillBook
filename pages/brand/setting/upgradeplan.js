@@ -150,7 +150,8 @@ const plan = [
     ],
   },
 ];
-const UpgradePlan = () => {
+
+export default function UpgradePlan() {
   const [compare, setCompare] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   return (
@@ -507,6 +508,4 @@ const UpgradePlan = () => {
       </div>
     </div>
   );
-};
-
-export default UpgradePlan;
+}

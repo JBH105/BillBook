@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 
-const Resetpassword = () => {
+export default function Resetpassword() {
   const router = useRouter();
   const initialValues = {
     password: "",
@@ -22,26 +22,14 @@ const Resetpassword = () => {
 
   return (
     <div className=" min-h-screen grid bg-white lg:grid-cols-2 lg:col-rows-1">
-      <div className="relative hidden     lg:flex items-center after:top-0 after:bottom-0 after:opacity-60 after:left-0 after:right-0  after:absolute after:content-[' ']  after:bg-violet600">
-        <div className="p-[60px] pt-[190px]  relative z-[8] ">
-          <h1 className="text-[32px] leading-[50px]  mb-10 font-semibold text-white">
-            Turn Your Impressions And Engagements Into Earnings
-          </h1>
-          <p className="text-[#E2D7F9] text-[15px] font-medium leanding-[22px]">
-            Create a free account and get full access hundreds of influecer
-            jobs. Trusted by 5000+ Influencers.
-          </p>
-        </div>
+      <div className="hidden lg:flex items-center after:top-0 after:bottom-0 after:opacity-60 after:left-0 after:right-0 ">
+        
         <img
-          className="absolute inset-0 h-full w-full object-cover"
-          src="/assets/images/Branding&Lifestyle.png"
+          className="h-full w-full"
+          src="/assets/login.svg"
           alt="Branding&Lifestyle"
         />
-        <img
-          src="/assets/images/Logo.svg"
-          alt="logo"
-          className="absolute z-[1] top-[55px] left-[60px]"
-        />
+        
       </div>
       <div className="flex  flex-col justify-center items-center px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-[134px]">
         <div className="mx-auto w-full ">
@@ -158,6 +146,4 @@ const Resetpassword = () => {
       </div>
     </div>
   );
-};
-
-export default Resetpassword;
+}

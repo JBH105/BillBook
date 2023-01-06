@@ -3,8 +3,12 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import React, { Fragment } from "react";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { addVender, AllVender } from "../../../Redux/action/vender";
 
 export default function CreateUser({ open, setopen }) {
+  const dispatch = useDispatch();
+  const vender = useSelector((state) => state.vender);
   const initialValues = {
     name: "",
     email: "",
@@ -17,6 +21,18 @@ export default function CreateUser({ open, setopen }) {
     company: Yup.string().required("Company Name is required!"),
     phone: Yup.string().required("Phone Number is required!").min(10).max(10),
   });
+
+  const handleVender = async (value) => {
+    const data = {
+      fullName: value.name,
+      businessEmail: value.email,
+      phoneNumber: value.phone,
+      companyName: value.company,
+    };
+    await dispatch(addVender(data));
+    setopen(false);
+    await dispatch(AllVender());
+  };
   return (
     <div>
       <Transition.Root show={open} as={Fragment}>
@@ -63,10 +79,9 @@ export default function CreateUser({ open, setopen }) {
                             initialValues={initialValues}
                             validationSchema={validationSchema}
                             enableReinitialize={true}
-                            // onSubmit={async (values) => {
-                            //   await handleSubmit(values);
-                            //   router.push("/brand/onboarding/personaldetail");
-                            // }}
+                            onSubmit={async (values) => {
+                              await handleVender(values);
+                            }}
                           >
                             {(formik) => {
                               return (

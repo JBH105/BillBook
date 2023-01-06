@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Fragment, useRef, useState } from "react";
-
+import moment from "moment";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useRouter } from "next/router";
 import { Listbox, Transition, Dialog } from "@headlessui/react";
@@ -12,77 +12,12 @@ import {
 } from "@heroicons/react/20/solid";
 import * as Yup from "yup";
 import Link from "next/link";
-const interest = [
-  { name: "Sports" },
-  { name: "Foods & Drinks" },
-  { name: "Beauty" },
-  { name: "Finance" },
-  { name: "Health & Fitness" },
-  { name: "Sports" },
-  { name: "Fashion" },
-  { name: "Education" },
-  { name: "Fitness" },
-  { name: "Sports" },
-  { name: "Politics" },
-  { name: "Healthcare" },
-  { name: "Beauty" },
-  { name: "Education" },
-  { name: "Sports" },
-  { name: "Foods & Drinks" },
-  { name: "Entertainments" },
-  { name: "Beauty" },
-  { name: "Finance" },
-  { name: "Health & Fitness" },
-  { name: "Sports" },
-];
-const Country = [
-  { id: 1, name: "Country" },
-  { id: 2, name: "Palmer " },
-  { id: 3, name: "Anniston" },
-  { id: 4, name: "Atmore" },
-  { id: 5, name: "Andalusia" },
-  { id: 6, name: "Prescott" },
-  { id: 7, name: "Arkadelphia" },
-  { id: 8, name: "Alameda" },
-];
-const City = [
-  { id: 1, name: "City" },
-  { id: 2, name: "Andalusia" },
-  { id: 3, name: "Anniston" },
-  { id: 4, name: "Atmore" },
-  { id: 5, name: "Palmer" },
-  { id: 6, name: "Prescott" },
-  { id: 7, name: "Arkadelphia" },
-  { id: 8, name: "Alameda" },
-];
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+import { useDispatch } from "react-redux";
+import { AllVender, DeleteVender } from "../../../../Redux/action/vender";
 
-const Profile = () => {
-  const [image, setImage] = useState();
+const Profile = ({ ProfileData, setProfileView }) => {
+  const dispatch = useDispatch();
   const [opnemodal, setOpenmodal] = useState(false);
-  const [country, setCountry] = useState(Country[0]);
-  const [selectedCity, setSelectedCity] = useState(City[0]);
-
-  const [selectedInterest, setSelectedInterest] = useState([]);
-  const handleAddRemoveInterest = (item) => {
-    if (selectedInterest.includes(item)) {
-      const arr = [...selectedInterest];
-      const index = arr.indexOf(item);
-      if (index > -1) {
-        // only splice array when item is found
-        arr.splice(index, 1);
-        setSelectedInterest([...arr]); // 2nd parameter means remove one item only
-      }
-    } else {
-      if (selectedInterest.length + 1 <= 2) {
-        setSelectedInterest([...selectedInterest, item]);
-      } else {
-      }
-    }
-  };
-
   const initialValues = {
     name: "",
     // phone: "",
@@ -110,6 +45,13 @@ const Profile = () => {
 
     // city: Yup.string().required("City is required!")
   });
+
+  const HandleVender = async () => {
+    await dispatch(DeleteVender(ProfileData.id));
+    setProfileView(false);
+    await dispatch(AllVender());
+  };
+
   return (
     <>
       <div className="custom-scroll overflow-y-auto">
@@ -125,13 +67,26 @@ const Profile = () => {
           {(formik) => {
             console.log(formik, "formikformik");
             return (
-              <Form className=" max-w-[724px] mt-10 lg:mt-0 flex-auto lg:ml-[75px] pt-10">
+              <Form className=" max-w-[724px] mt-10 lg:mt-0 flex-auto  mr-[25px] ml-[25px] sm:mr-[50px] sm:ml-[50px] lg:ml-[75px] pt-10">
                 <div>
                   <h3 className="text-[14px] md:text-[13px] mb-4 font-semibold leading-5 text-gray500">
                     ACCOUNT DETAILS
                   </h3>
 
                   <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-2">
+                    <div className="">
+                      <label className="block md:mb-1 text-[13px] font-medium leading-5 text-gray700">
+                        ID
+                      </label>
+                      <Field
+                        id="create"
+                        name="create"
+                        type="number"
+                        value={ProfileData.id}
+                        placeholder="12"
+                        className="md:max-w-[350px] inputbg focus:bg-white/[0.25] focus:bg-white/[0.25] w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
+                      />
+                    </div>
                     <div className="">
                       <label className="block md:mb-1 text-[12px] md:text-[13px] font-medium leading-5 text-gray700">
                         Name
@@ -141,6 +96,7 @@ const Profile = () => {
                         name="name"
                         placeholder="Enter your name"
                         type="text"
+                        value={ProfileData?.fullName}
                         className="md:max-w-[350px] inputbg w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 focus:bg-white/[0.25] bg-white bg-opacity-[0.25] px-4"
                       />
                       <div style={{ color: "red" }}>
@@ -153,11 +109,12 @@ const Profile = () => {
                     </div>
                     <div className="">
                       <label className="block md:mb-1 text-[13px] font-medium leading-5 text-gray700">
-                        Email Address
+                        Business Email
                       </label>
                       <Field
                         id="email"
                         name="email"
+                        value={ProfileData.businessEmail}
                         placeholder="example@example.com"
                         className="md:max-w-[350px] inputbg focus:bg-white/[0.25] focus:bg-white/[0.25] w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
                       />
@@ -169,263 +126,74 @@ const Profile = () => {
                         />
                       </div>
                     </div>
-                    {/* <div className="">
-                    <label className="block md:mb-1 text-[13px] font-medium leading-5 text-gray700">
-                      City
-                    </label>
-                    <Field
-                      placeholder="City"
-                      className="md:max-w-[350px] w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
-                    />
-                    <div style={{ color: "red" }}>
-                      <ErrorMessage
-                        name="name"
-                        component="span"
-                        className="error text-[13px] font-medium leanding-[20px] text-red500"
-                      />
-                    </div>
-                  </div>
-                  <div className="">
-                    <label className="block md:mb-1 text-[13px] font-medium leading-5 text-gray700">
-                      Country
-                    </label>
-                    <Field
-                      placeholder="Nation"
-                      className="md:max-w-[350px] w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
-                    />
-                    <div style={{ color: "red" }}>
-                      <ErrorMessage
-                        name="name"
-                        component="span"
-                        className="error text-[13px] font-medium leanding-[20px] text-red500"
-                      />
-                    </div>
-                  </div> */}
-                    <div>
-                      <Listbox
-                        value={country}
-                        onChange={setCountry}
-                        className=""
-                      >
-                        {({ open }) => (
-                          <>
-                            <Listbox.Label
-                              htmlFor="email"
-                              className="block md:mb-1 text-[13px] font-medium leading-5 text-gray700"
-                            >
-                              Country
-                            </Listbox.Label>
-                            <div className="relative mt-1 ">
-                              <Listbox.Button className="relative w-full md:max-w-[350px] focus:bg-white/[0.25] text-left focus:outline-none border border-gray250 focus:border-[#2E1368] text-[15px] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4">
-                                <span
-                                  className={`${
-                                    country.name === "Country"
-                                      ? "italic text-black600/[0.3] leading-[22px] font-normal  "
-                                      : " font-medium leading-[22px] text-black600 "
-                                  }"block truncate "`}
-                                >
-                                  {country.name}
-                                </span>
-                                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                                  <ChevronDownIcon
-                                    className="h-5 w-5 text-gray-400"
-                                    aria-hidden="true"
-                                  />
-                                </span>
-                              </Listbox.Button>
 
-                              <Transition
-                                show={open}
-                                as={Fragment}
-                                leave="transition ease-in duration-100"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                              >
-                                <Listbox.Options className="absolute selectpalceholde z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                  {Country.map((person) => (
-                                    <Listbox.Option
-                                      key={person.id}
-                                      className={({ active }) =>
-                                        classNames(
-                                          active
-                                            ? "text-white bg-indigo-600"
-                                            : "text-gray-900",
-                                          "relative cursor-default select-none py-2 pl-8 pr-4"
-                                        )
-                                      }
-                                      value={person}
-                                    >
-                                      {({ country, active }) => (
-                                        <>
-                                          <span
-                                            className={classNames(
-                                              country
-                                                ? "font-semibold"
-                                                : "font-normal",
-                                              "block truncate"
-                                            )}
-                                          >
-                                            {person.name}
-                                          </span>
-
-                                          {country ? (
-                                            <span
-                                              className={classNames(
-                                                active
-                                                  ? "text-white"
-                                                  : "text-indigo-600",
-                                                "absolute inset-y-0 left-0 flex items-center pl-1.5"
-                                              )}
-                                            >
-                                              <CheckIcon
-                                                className="h-5 w-5"
-                                                aria-hidden="true"
-                                              />
-                                            </span>
-                                          ) : null}
-                                        </>
-                                      )}
-                                    </Listbox.Option>
-                                  ))}
-                                </Listbox.Options>
-                              </Transition>
-                            </div>
-                          </>
-                        )}
-                      </Listbox>
-                    </div>
-                    <div>
-                      <Listbox
-                        value={selectedCity}
-                        onChange={setSelectedCity}
-                        className=""
-                      >
-                        {({ open }) => (
-                          <>
-                            <Listbox.Label
-                              htmlFor="email"
-                              className="block md:mb-1 text-[13px] font-medium leading-5 text-gray700"
-                            >
-                              City
-                            </Listbox.Label>
-                            <div className="relative mt-1 ">
-                              <Listbox.Button className="relative w-full inputbg md:max-w-[350px] focus:bg-white/[0.25] text-left focus:outline-none border border-gray250 focus:border-[#2E1368] text-[15px] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4">
-                                <span
-                                  className={`${
-                                    selectedCity.name === "City"
-                                      ? "italic text-black600/[0.3] leading-[22px] font-normal  "
-                                      : " font-medium leading-[22px] text-black600 "
-                                  }"block truncate "`}
-                                >
-                                  {selectedCity.name}
-                                </span>
-                                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                                  <ChevronDownIcon
-                                    className="h-5 w-5 text-gray-400"
-                                    aria-hidden="true"
-                                  />
-                                </span>
-                              </Listbox.Button>
-
-                              <Transition
-                                show={open}
-                                as={Fragment}
-                                leave="transition ease-in duration-100"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                              >
-                                <Listbox.Options className="absolute selectpalceholde z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                  {City.map((person) => (
-                                    <Listbox.Option
-                                      key={person.id}
-                                      className={({ active }) =>
-                                        classNames(
-                                          active
-                                            ? "text-white bg-indigo-600"
-                                            : "text-gray-900",
-                                          "relative cursor-default select-none py-2 pl-8 pr-4"
-                                        )
-                                      }
-                                      value={person}
-                                    >
-                                      {({ selectedCity, active }) => (
-                                        <>
-                                          <span
-                                            className={classNames(
-                                              selectedCity
-                                                ? "font-semibold"
-                                                : "font-normal",
-                                              "block truncate"
-                                            )}
-                                          >
-                                            {person.name}
-                                          </span>
-
-                                          {selectedCity ? (
-                                            <span
-                                              className={classNames(
-                                                active
-                                                  ? "text-white"
-                                                  : "text-indigo-600",
-                                                "absolute inset-y-0 left-0 flex items-center pl-1.5"
-                                              )}
-                                            >
-                                              <CheckIcon
-                                                className="h-5 w-5"
-                                                aria-hidden="true"
-                                              />
-                                            </span>
-                                          ) : null}
-                                        </>
-                                      )}
-                                    </Listbox.Option>
-                                  ))}
-                                </Listbox.Options>
-                              </Transition>
-                            </div>
-                          </>
-                        )}
-                      </Listbox>
-                    </div>
                     <div className="">
                       <label className="block md:mb-1 text-[13px] font-medium leading-5 text-gray700">
-                        Date of Birth
-                      </label>
-                      <div className="relative">
-                        <Field
-                          id="birth"
-                          name="birth"
-                          placeholder="DD/MM/YYY"
-                          type="date"
-                          className="md:max-w-[350px]  dateinput w-full focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
-                        />
-                        <div style={{ color: "red" }}>
-                          <ErrorMessage
-                            name="birth"
-                            component="span"
-                            className="error text-[13px] font-medium leanding-[20px] text-red500"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="">
-                      <label className="block md:mb-1 text-[13px] font-medium leading-5 text-gray700">
-                        Bio
+                        Company Name
                       </label>
                       <Field
-                        id="bio"
-                        name="bio"
-                        placeholder="Enter your name"
-                        type="text"
-                        className="md:max-w-[350px] focus:bg-white/[0.25] inputbg w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
+                        id="email"
+                        name="email"
+                        value={ProfileData.companyName}
+                        placeholder="example@example.com"
+                        className="md:max-w-[350px] inputbg focus:bg-white/[0.25] focus:bg-white/[0.25] w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
                       />
                       <div style={{ color: "red" }}>
                         <ErrorMessage
-                          name="bio"
+                          name="email"
                           component="span"
                           className="error text-[13px] font-medium leanding-[20px] text-red500"
                         />
                       </div>
+                    </div>
+                    <div className="">
+                      <label className="block md:mb-1 text-[13px] font-medium leading-5 text-gray700">
+                        Phone Number
+                      </label>
+                      <Field
+                        id="email"
+                        name="email"
+                        value={ProfileData.phoneNumber}
+                        placeholder="example@example.com"
+                        className="md:max-w-[350px] inputbg focus:bg-white/[0.25] focus:bg-white/[0.25] w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
+                      />
+                      <div style={{ color: "red" }}>
+                        <ErrorMessage
+                          name="email"
+                          component="span"
+                          className="error text-[13px] font-medium leanding-[20px] text-red500"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="">
+                      <label className="block md:mb-1 text-[13px] font-medium leading-5 text-gray700">
+                        Created
+                      </label>
+                      <Field
+                        id="create"
+                        name="create"
+                        type="text"
+                        value={moment(ProfileData.createdAt).format(
+                          "DD/MMM/YYYY"
+                        )}
+                        placeholder="DD/MMM/YYYY"
+                        className="md:max-w-[350px] inputbg focus:bg-white/[0.25] focus:bg-white/[0.25] w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
+                      />
+                    </div>
+                    <div className="">
+                      <label className="block md:mb-1 text-[13px] font-medium leading-5 text-gray700">
+                        Updated
+                      </label>
+                      <Field
+                        id="updated"
+                        name="updated"
+                        type="text"
+                        value={moment(ProfileData.updatedAt).format(
+                          "DD/MMM/YYYY"
+                        )}
+                        className="md:max-w-[350px] inputbg focus:bg-white/[0.25] focus:bg-white/[0.25] w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
+                      />
                     </div>
                   </div>
                 </div>
@@ -449,7 +217,9 @@ const Profile = () => {
                 <div className="mt-14 sm:mt-10">
                   <button
                     type="button"
-                    onClick={() => setOpenmodal(true)}
+                    onClick={() => {
+                      HandleVender();
+                    }}
                     className="text-[15px] w-full sm:w-auto font-semibold sm:border rounded-lg sm:border-[#FF0000] py-3 px-[30px] text-[#FF0000] focus:outline-none"
                   >
                     Deactivate Account
