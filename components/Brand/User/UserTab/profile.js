@@ -65,7 +65,6 @@ const Profile = ({ ProfileData, setProfileView }) => {
           }}
         >
           {(formik) => {
-            console.log(formik, "formikformik");
             return (
               <Form className=" max-w-[724px] mt-10 lg:mt-0 flex-auto  mr-[25px] ml-[25px] sm:mr-[50px] sm:ml-[50px] lg:ml-[75px] pt-10">
                 <div>

@@ -78,7 +78,6 @@ export default function Index() {
             }}
           >
             {(formik) => {
-              console.log(formik, "formikformik");
               return (
                 <Form className=" max-w-[724px] mt-10 lg:mt-0 flex-auto lg:ml-[75px] pt-10">
                   <div>

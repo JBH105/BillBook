@@ -47,6 +47,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       icon2: "/assets/icons/speak-dark.svg",
       icon1: "/assets/icons/speak.svg",
     },
+    {
+      name: "Stock",
+      href: "/brand/stock",
+      href2: "/brand/campaigns/newcampaigns",
+      icon2: "/assets/icons/speak-dark.svg",
+      icon1: "/assets/icons/speak.svg",
+    },
   ];
   const HendleLogOut = () => {
     sessionStorage.removeItem("x-access-token");

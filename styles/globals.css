@@ -374,3 +374,6 @@ input:-webkit-autofill:active {
 .custom-tooltip::after , .custom-tooltip::before{
 display: none;
 }
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
