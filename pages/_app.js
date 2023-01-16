@@ -19,7 +19,9 @@ function MyApp({ Component, pageProps }) {
     router.pathname == "/brand/onboarding/connections" ? (
     <Provider store={store}>
       <PersistGate loading={<h1>hello</h1>} persistor={persistor}>
-        <Component {...pageProps} />
+        <Toast >
+          <Component {...pageProps} />
+        </Toast>
       </PersistGate>
     </Provider>
   ) : (

@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { logIn } from "../../Redux/action/auth";
+import { resetToast, showToast } from "../../Redux/action/toast";
 
 export default function Login() {
   const state = useSelector((state) => {
@@ -12,8 +13,6 @@ export default function Login() {
   });
   const dispatch = useDispatch();
   const router = useRouter();
-  const userError = useSelector((state) => state.logIn.error);
-  const [error, setError] = useState();
   const initialValues = {
     email: "",
     password: "",
@@ -23,14 +22,33 @@ export default function Login() {
     password: Yup.string().required("Must be at least 4 characters.").min(4),
   });
   const [showPassword, setShowPassword] = useState(false);
+
   const handleSubmit = async (values) => {
-    await dispatch(logIn(values));
+    const response = await dispatch(logIn(values));
     const token = sessionStorage.getItem("x-access-token");
-    if (token) {
+    if (response?.payload.token) {
+      await dispatch(showToast({
+        message: "user login successful",
+        time: 5000,
+        id: "SampleToast",
+        type: 200,
+        handleClose: () => { console.log("the toast is closed") }
+      }))
       router.push("/brand/dashboard");
-      setError(" ");
+      setTimeout(() => {
+        dispatch(resetToast())
+      }, 3000)
     } else {
-      setError(userError.error);
+      await dispatch(showToast({
+        message: response?.payload.error,
+        time: 5000,
+        id: "SampleToast",
+        type: 400,
+        handleClose: () => { console.log("the toast is closed") }
+      }))
+      setTimeout(() => {
+        dispatch(resetToast())
+      }, 3000)
     }
   };
   return (
@@ -41,7 +59,7 @@ export default function Login() {
           src="/assets/login.svg"
           alt="Branding&Lifestyle"
         />
-        
+
       </div>
       <div className="flex  flex-col justify-center items-center px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-[134px]">
         <div className="mx-auto w-full ">
@@ -53,7 +71,6 @@ export default function Login() {
               We’re happy to see you again. To use your account, login first
             </p>
           </div>
-          <div className="text-red-600 mt-4">{error}</div>
           <div className="mt-14">
             <Formik
               initialValues={initialValues}

@@ -19,7 +19,6 @@ const InfluencerSearch = () => {
     (state) => state.Transaction.AllTransaction
   );
   const allStock = useSelector((state) => state.Product.allstock)
-  console.log("🚀 ~ file: index.js:18 ~ InfluencerSearch ~ allStock", allStock)
   const [page, setPage] = useState(1);
 
   const pageLimit = [];

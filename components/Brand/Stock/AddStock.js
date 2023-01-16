@@ -70,7 +70,7 @@ export default function AddStock({ profileView, setProfileView, userDetail }) {
         message: response?.payload.data.message,
         time: 5000,
         id: "SampleToast",
-        type: 404,
+        type: 400,
         handleClose: () => { console.log("the toast is closed") }
       }))
       setTimeout(() => {

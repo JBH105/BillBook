@@ -18,18 +18,16 @@ export default function Toast({ children }) {
       toastState.iconscolor = "text-red-800"
       break;
     default:
-      toastState.color = "bg-yellow-50"
-      toastState.textcolor = "text-yellow-700"
-      toastState.iconscolor = "text-yellow-800"
+      break
   }
 
   return (
     <div>
       {Boolean(toastState.message) && (
-        <div className="w-[20%] fixed top-[15px] right-[20px] z-[99999999]">
+        <div className=" fixed top-[15px] right-[20px] z-[99999999]">
           <div
             id="alert-1"
-            class={`flex p-4 text-blue-700 ${toastState.color} rounded-lg dark:bg-gray-800 ${toastState.textcolor}`}
+            class={`flex p-4 ${toastState.color} rounded-lg dark:bg-gray-800 ${toastState.textcolor}`}
             role="alert"
           >
             <svg
