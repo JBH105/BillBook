@@ -9,12 +9,12 @@ export const signUp = (data) => {
   return async (dispatch) => {
     try {
       const response = await BASE_URL.post("create_user", data);
-      dispatch({
+      return dispatch({
         type: "CREATE_USER",
         payload: response.data,
       });
     } catch (err) {
-      dispatch({
+      return dispatch({
         type: "SET_LOADING",
         payload: false,
       });

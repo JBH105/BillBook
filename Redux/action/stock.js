@@ -12,14 +12,35 @@ export const AddProduct = (data) => {
           "x-access-token": sessionStorage.getItem("x-access-token"),
         },
       });
-      dispatch({
+      return dispatch({
         type: "ADD_STOCK",
         payload: response.data,
       });
     } catch (error) {
-      dispatch({
+      return dispatch({
         type: "SET_LOADING",
         payload: error.response,
+      });
+    }
+  };
+};
+
+export const AllProduct = (data) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(`${URL}/allproduct?page=${data}`, {
+        headers: {
+          "x-access-token": sessionStorage.getItem("x-access-token"),
+        },
+      });
+      dispatch({
+        type: "ALL_PRODUCT",
+        payload: response.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: "SET_LOADING",
+        payload: err,
       });
     }
   };

@@ -97,7 +97,7 @@ export default function RecentHistory({ openTab, setProfileView }) {
 
   return (
     <div className="h-0 flex-1 pt-[17px] px-2.5  md:pl-[49px] md:pr-[47px] custom-scroll overflow-y-auto bg-main-bg  px-[30px] pb-4">
-      {transaction.data.length ? (
+      {transaction.data?.length ? (
         <div className={`${openTab === 0 ? "block" : "hidden"}  `}>
           <div className="sm:flex justify-between"></div>
           <div className="max-w-[938px] grid gap-7 lg:grid-cols-2 mt-6">

@@ -1,6 +1,7 @@
 const initialState = {
   stock: [],
   error: [],
+  allstock: []
 };
 
 export const Stock = (state = initialState, action) => {
@@ -10,8 +11,13 @@ export const Stock = (state = initialState, action) => {
         ...state,
         stock: action.payload,
       };
+    case "ALL_PRODUCT":
+      return {
+        ...state,
+        allstock: action.payload
+      }
     case "SET_LOADING":
-      return { ...state, stock: action.payload };
+      return { ...state, error: action.payload };
 
     default:
       return state;

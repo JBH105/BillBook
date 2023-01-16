@@ -4,6 +4,7 @@ import "../styles/globals.css";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "../Redux/store";
+import Toast from "../components/Toast/Index";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
@@ -24,9 +25,11 @@ function MyApp({ Component, pageProps }) {
   ) : (
     <Provider store={store}>
       <PersistGate loading={<h1>hello</h1>} persistor={persistor}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <Toast >
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </Toast>
       </PersistGate>
     </Provider>
   );

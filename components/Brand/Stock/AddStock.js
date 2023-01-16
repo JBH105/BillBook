@@ -10,8 +10,9 @@ import * as Yup from "yup";
 import { VenderTransaction } from "../../../Redux/action/transaction";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { AddProduct } from "../../../Redux/action/stock";
+import { AddProduct, AllProduct } from "../../../Redux/action/stock";
 import Toast from "../../Toast/Index";
+import { resetToast, showToast } from "../../../Redux/action/toast";
 
 const tab = [
   { name: "Recent History" },
@@ -22,7 +23,6 @@ const tab = [
 export default function AddStock({ profileView, setProfileView, userDetail }) {
   const dispatch = useDispatch();
   const Product = useSelector((state) => state.Product.stock);
-  console.log("🚀 ~ file: AddStock.js:24 ~ AddStock ~ Product", Product);
   const [page, setPage] = useState(1);
   const [image, setImage] = useState();
   const initialValues = {
@@ -50,8 +50,37 @@ export default function AddStock({ profileView, setProfileView, userDetail }) {
     formData.append("total_Quantity", values.quantity);
     formData.append("selling_Price", values.selling);
 
-    await dispatch(AddProduct(formData));
+    const response = await dispatch(AddProduct(formData));
+
+    await dispatch(AllProduct(page))
+    if (response?.payload.message) {
+      await dispatch(showToast({
+        message: response?.payload.message,
+        time: 5000,
+        id: "SampleToast",
+        type: 200,
+        handleClose: () => { console.log("the toast is closed") }
+      }))
+      setTimeout(() => {
+        dispatch(resetToast())
+      }, 3000)
+      setProfileView(false)
+    } else {
+      await dispatch(showToast({
+        message: response?.payload.data.message,
+        time: 5000,
+        id: "SampleToast",
+        type: 404,
+        handleClose: () => { console.log("the toast is closed") }
+      }))
+      setTimeout(() => {
+        dispatch(resetToast())
+      }, 3000)
+    }
+
+
   };
+
   return (
     <div>
       <div className="">
@@ -80,9 +109,10 @@ export default function AddStock({ profileView, setProfileView, userDetail }) {
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <Dialog.Panel className="relative flex w-full max-w-[988px] flex-1 flex-col bg-white">
-                  <Toast message={Product?.data?.message || Product.message} />
-                  <div className="flex flex-col flex-shrink-0 pt-8 px-3 md:px-12">
+                <Dialog.Panel className="relative min-h-[100vh] flex w-full max-w-[988px] flex-1 flex-col bg-white">
+
+
+                  <div className="flex h-full flex-col flex-shrink-0 pt-8 px-3 md:px-12">
                     <div className="w-full flex items-center space-x-[25px]">
                       <button
                         className="focus:outline-none"
@@ -94,12 +124,12 @@ export default function AddStock({ profileView, setProfileView, userDetail }) {
                         Add New Stock
                       </h2>
                     </div>
-                    <div className="mt-7">
+                    <div className="mt-7 custom-scroll min-h-[calc(100vh_-_5rem)] overflow-auto">
                       <nav
-                        className="-mb-px flex gap-[20px] sm:gap-[30px] lg:gap-[68px] overflow-x-auto"
+                        className="-mb-px flex gap-[20px] sm:gap-[30px] lg:gap-[68px] "
                         aria-label="Tabs"
                       >
-                        <div className="custom-scroll h-[100vh] overflow-auto">
+                        <div className=" w-full ">
                           <Formik
                             initialValues={initialValues}
                             validationSchema={validationSchema}
@@ -108,7 +138,7 @@ export default function AddStock({ profileView, setProfileView, userDetail }) {
                           >
                             {(formik) => {
                               return (
-                                <Form className=" max-w-[724px] mt-10 lg:mt-0 flex-auto  mr-[25px] ml-[25px] sm:mr-[50px] sm:ml-[50px] lg:ml-[75px] pt-10">
+                                <Form className=" mt-10 lg:mt-0 flex-auto mr-[25px] ml-[25px] sm:mr-[50px] sm:ml-[50px] lg:ml-[75px] py-10">
                                   <div>
                                     <h3 className="text-[14px] md:text-[13px] mb-4 font-semibold leading-5 text-gray500">
                                       ADD PRODUCT DETAILS
@@ -258,11 +288,10 @@ export default function AddStock({ profileView, setProfileView, userDetail }) {
                                       disabled={
                                         !(formik.isValid && formik.dirty)
                                       }
-                                      className={`${
-                                        formik.isValid && formik.dirty
-                                          ? ""
-                                          : "opacity-[0.3]"
-                                      } bg-violet600 shadow-blue100  w-full sm:w-auto block sm:inline-block  focus:outline-none rounded-[4px] sm:rounded-lg py-3 px-[30px] font-semibold text-[15px] leading-[22px] text-white  `}
+                                      className={`${formik.isValid && formik.dirty
+                                        ? ""
+                                        : "opacity-[0.3]"
+                                        } bg-violet600 shadow-blue100  w-full sm:w-auto block sm:inline-block  focus:outline-none rounded-[4px] sm:rounded-lg py-3 px-[30px] font-semibold text-[15px] leading-[22px] text-white  `}
                                     >
                                       Save Changes
                                     </button>

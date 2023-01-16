@@ -83,7 +83,7 @@ const RecentTransaction = ({ vender, page, setPage }) => {
   return (
     <>
       <main className="bg-main-bg h-full px-4 sm:px-6 lg:px-[60px] custom-scroll overflow-y-auto">
-        {transaction.data.length ? (
+        {transaction.data?.length ? (
           <div className="py-6">
             <div className="mt-6 bg-white shadow-dark20 pt-[18px] px-[30px] pb-[22px] rounded-[15px]">
               <h2 className="text-black600 text-[20px] leading-[30px] font-semibold ntialiased ">

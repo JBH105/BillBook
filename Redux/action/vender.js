@@ -11,12 +11,12 @@ export const addVender = (data) => {
           "x-access-token": sessionStorage.getItem("x-access-token"),
         },
       });
-      dispatch({
+      return dispatch({
         type: "CREATE_VENDER",
         payload: response.data,
       });
     } catch (err) {
-      dispatch({
+      return dispatch({
         type: "SET_LOADING",
         payload: err,
       });
@@ -32,12 +32,12 @@ export const AllVender = () => {
           "x-access-token": sessionStorage.getItem("x-access-token"),
         },
       });
-      dispatch({
+      return dispatch({
         type: "All_VENDER",
         payload: response.data,
       });
     } catch (err) {
-      dispatch({
+      return dispatch({
         type: "SET_LOADING",
         payload: false,
       });
@@ -53,13 +53,12 @@ export const DeleteVender = (id) => {
           "x-access-token": sessionStorage.getItem("x-access-token"),
         },
       });
-      console.log("🚀 ~ file: vender.js:55 ~ return ~ response", response);
-      dispatch({
+      return dispatch({
         type: "DELETE_VENDER",
         payload: response.data,
       });
     } catch (err) {
-      dispatch({
+      return dispatch({
         type: "SET_LOADING",
         payload: false,
       });

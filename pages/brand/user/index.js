@@ -42,7 +42,7 @@ export default function Index({ userData }) {
           <div className="bg-white rounded-[15px] shadow-dark80 py-[21px] px-6">
             <div className="flex justify-between items-center">
               <span className="text-[30px] font-semibold leading-[22px] text-black400">
-                {vender.length}
+                {vender?.length}
               </span>
               <button
                 className="rounded border border-transparent bg-violet600 py-3 px-4 text-[15px] font-semibold text-white shadow-sm  focus:outline-none focus:ring-0 "

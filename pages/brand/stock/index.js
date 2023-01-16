@@ -6,24 +6,30 @@ import { useDispatch, useSelector } from "react-redux";
 import { AllTransaction } from "../../../Redux/action/transaction";
 import Details from "../../../components/Brand/User/Details";
 import AddStock from "../../../components/Brand/Stock/AddStock";
+import { AllProduct } from "../../../Redux/action/stock";
+import BASE_URL from "../../../URL";
+import Image from "../../../components/ImageBox/Image";
 
 const InfluencerSearch = () => {
   const dispatch = useDispatch();
   const [profileView, setProfileView] = useState(false);
+  const [image, setImage] = useState()
+  const [open, setOpen] = useState(false)
   const allTransaction = useSelector(
     (state) => state.Transaction.AllTransaction
   );
-
+  const allStock = useSelector((state) => state.Product.allstock)
+  console.log("🚀 ~ file: index.js:18 ~ InfluencerSearch ~ allStock", allStock)
   const [page, setPage] = useState(1);
 
   const pageLimit = [];
   var i;
-  for (i = 1; i <= allTransaction.total; i++) {
+  for (i = 1; i <= allStock.total; i++) {
     pageLimit.push(i);
   }
 
   const handleTransaction = async () => {
-    await dispatch(AllTransaction(page));
+    await dispatch(AllProduct(page))
   };
 
   useEffect(() => {
@@ -37,6 +43,7 @@ const InfluencerSearch = () => {
           profileView={profileView}
           setProfileView={setProfileView}
         />
+        <Image open={open} setOpen={setOpen} image={image} />
         <div className="py-6">
           <div className="mt-6 bg-white shadow-dark20 pt-[18px] px-[30px] pb-[22px] rounded-[15px]">
             <div className="md:flex justify-between">
@@ -67,81 +74,54 @@ const InfluencerSearch = () => {
                             scope="col"
                             className="px-3 py-[9px]  text-left text-[15px] font-semibold text-violet600"
                           >
-                            Vender Name
+                            Product Image
                           </th>
                           <th
                             scope="col"
                             className="px-3 py-[9px]  text-left text-[15px] font-semibold text-violet600"
                           >
-                            Currency
+                            Product ID
                           </th>
                           <th
                             scope="col"
                             className="px-3 py-[9px]   text-left text-[15px] font-semibold text-violet600"
                           >
-                            Rate(Quantity)
+                            Product Name
                           </th>
                           <th
                             scope="col"
                             className="px-3 py-[9px]   text-left text-[15px] font-semibold text-violet600"
                           >
-                            Amount(Price)
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-3 py-[9px]   text-left text-[15px] font-semibold text-violet600"
-                          >
-                            Total Amount
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-3 py-[9px]   text-center text-[15px] font-semibold text-violet600"
-                          >
-                            Status
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-3 py-[9px]   text-end text-[15px] font-semibold text-violet600"
-                          >
-                            Date
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-3 py-[9px]   text-end text-[15px] font-semibold text-violet600"
-                          >
-                            Details
+                            Total Quantity
                           </th>
                         </tr>
                       </thead>
                       <tbody>
-                        {allTransaction.data &&
-                          allTransaction.data.map((person, personIdx) => (
+                        {allStock.data &&
+                          allStock.data.map((person, personIdx) => (
                             <tr
                               key={person.email}
-                              className={`${
-                                personIdx % 2 === 1
-                                  ? undefined
-                                  : "bg-[#D9D9D9] bg-opacity-[0.2]"
-                              } influencertable`}
+                              className={`${personIdx % 2 === 1
+                                ? undefined
+                                : "bg-[#D9D9D9] bg-opacity-[0.2]"
+                                } influencertable`}
                             >
                               <td className="whitespace-nowrap py-3 px-3 cursor-pointer text-sm ">
                                 <div className="flex items-center">
                                   <div className="h-10 w-10 flex-shrink-0">
                                     <div
                                       className="text-[20px] rounded-full text-center border border-transparent grid items-center h-full w-full"
-                                      style={{
-                                        background: randomIntFromInterval(0, 9),
-                                        color: "white",
-                                      }}
+
                                     >
-                                      {person?.vender?.fullName
-                                        .match(/\b(\w)/g)
-                                        .slice(0, 2)}
+                                      <img onClick={() => {
+                                        setOpen(true)
+                                        setImage(`${BASE_URL}/image/${person?.product_Image}`)
+                                      }} src={`${BASE_URL}/image/${person?.product_Image}`} />
                                     </div>
                                   </div>
-                                  <div className="ml-2">
+                                  {/* <div className="ml-2">
                                     <div className="font-semibold text-[13px] leading-5  text-black500">
-                                      {person.vender?.fullName}
+                                      {person?.product_ID}
                                     </div>
                                     <div className="text-black400 text-[10px] leading-[15px] flex items-center font-medium">
                                       <img
@@ -150,34 +130,29 @@ const InfluencerSearch = () => {
                                       />{" "}
                                       <span>{person?.vender?.phoneNumber}</span>
                                     </div>
-                                  </div>
+                                  </div> */}
                                 </div>
                               </td>
                               <td className="whitespace-nowrap py-3 px-3 text-sm  font-medium text-gray-900 ">
                                 <div className="flex space-x-[7px]">
-                                  <div className="">{person.currency}</div>
+                                  <div className="">{person?.product_ID}</div>
                                 </div>
                               </td>
                               <td className="whitespace-nowrap px-3 py-3 leading-5 font-medium  text-sm font-medium text-gray-900">
-                                <div className=" ">{person.rate}</div>
+                                <div className=" ">{person?.product_Name}</div>
                               </td>
                               <td className="whitespace-nowrap px-3 py-3 leading-5 font-medium  text-xs font-medium text-gray-900">
-                                {person.amount}
+                                {person?.total_Quantity}
                               </td>
-                              <td className="relative min-w-[190px] whitespace-wordwrap py-3 px-3 text-left text-[13px] leading-5 font-medium text-sm text-gray-900 ">
-                                <span className="">
-                                  {person.rate * person.amount}
-                                </span>
-                              </td>
-                              <td className="whitespace-nowrap min-w-[210px] text-center px-3 py-3 text-sm text-gray-500">
+
+                              {/* <td className="whitespace-nowrap min-w-[210px] text-center px-3 py-3 text-sm text-gray-500">
                                 <span
-                                  className={`${
-                                    person.transactionType === "Credit"
-                                      ? " bg-green100 text-green600"
-                                      : person.transactionType === "Debit"
+                                  className={`${person.transactionType === "Credit"
+                                    ? " bg-green100 text-green600"
+                                    : person.transactionType === "Debit"
                                       ? " bg-[#FFEFDB] text-[#FF8B00]"
                                       : ""
-                                  } text-black400 px-[5px] py-[3px] rounded font-medium leading-[15px] text-[13px] text-center`}
+                                    } text-black400 px-[5px] py-[3px] rounded font-medium leading-[15px] text-[13px] text-center`}
                                 >
                                   {person.transactionType}
                                 </span>
@@ -187,7 +162,7 @@ const InfluencerSearch = () => {
                                   {person.transactionDate}
                                 </div>
                               </td>
-                              <td></td>
+                              <td></td> */}
                             </tr>
                           ))}
                       </tbody>
@@ -211,7 +186,7 @@ const InfluencerSearch = () => {
                           // bg-white text-violet600 hover:bg-violet600   hover:text-white ring-1
 
                           className={
-                            item === allTransaction.current
+                            item === allStock.current
                               ? "bg-violet600 rounded-[6px] flex items-center justify-center text-white ring-1 ring-purple100 w-[24.75px] h-[24.75px]  text-[13px] font-semibold leading-5"
                               : "bg-white text-violet600 hover:bg-violet600 rounded-[6px] flex items-center justify-center hover:text-white ring-1 ring-purple100 w-[24.75px] h-[24.75px]  text-[13px] font-semibold leading-5"
                           }
@@ -227,7 +202,7 @@ const InfluencerSearch = () => {
                 </button>
               </div>
             </div>
-           
+
           </div>
         </div>
       </main>

@@ -11,12 +11,12 @@ export const addTransaction = (data) => {
           "x-access-token": sessionStorage.getItem("x-access-token"),
         },
       });
-      dispatch({
+      return dispatch({
         type: "CREATE_TRANSACTION",
         payload: response.data,
       });
     } catch (err) {
-      dispatch({
+      return dispatch({
         type: "SET_LOADING",
         payload: err,
       });
@@ -35,12 +35,12 @@ export const VenderTransaction = (data) => {
           },
         }
       );
-      dispatch({
+      return dispatch({
         type: "VENDER_TRANSACTION",
         payload: response.data,
       });
     } catch (err) {
-      dispatch({
+      return dispatch({
         type: "SET_LOADING",
         payload: err,
       });
@@ -56,12 +56,12 @@ export const AllTransaction = (data) => {
           "x-access-token": sessionStorage.getItem("x-access-token"),
         },
       });
-      dispatch({
+      return dispatch({
         type: "ALL_TRANSACTION",
         payload: response.data,
       });
     } catch (err) {
-      dispatch({
+      return dispatch({
         type: "SET_LOADING",
         payload: err,
       });

@@ -100,12 +100,12 @@ export default function Index() {
                                 <Listbox.Button className="relative w-full md:max-w-[350px] focus:bg-white/[0.25] text-left focus:outline-none border border-gray250 focus:border-[#2E1368] text-[15px] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4">
                                   <span
                                     className={`${
-                                      country.name === "Country"
+                                      country?.name === "Country"
                                         ? "italic text-black600/[0.3] leading-[22px] font-normal  "
                                         : " font-medium leading-[22px] text-black600 "
                                     }"block truncate "`}
                                   >
-                                    {country.fullName}
+                                    {country?.fullName}
                                   </span>
                                   <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                                     <ChevronDownIcon
