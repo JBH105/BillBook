@@ -45,3 +45,24 @@ export const AllProduct = (data) => {
     }
   };
 };
+
+export const DeleteProduct = (id) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.delete(`${URL}/deleteproduct/${id}`, {
+        headers: {
+          "x-access-token": sessionStorage.getItem("x-access-token"),
+        },
+      });
+      return dispatch({
+        type: "DELETE_PRODUCT",
+        payload: response.data,
+      });
+    } catch (err) {
+      return dispatch({
+        type: "SET_LOADING",
+        payload: err,
+      });
+    }
+  };
+};

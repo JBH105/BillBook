@@ -54,6 +54,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       icon2: "/assets/icons/speak-dark.svg",
       icon1: "/assets/icons/speak.svg",
     },
+    {
+      name: "Billing",
+      href: "/brand/billing",
+      icon1: "/assets/icons/people-white.svg",
+      icon2: "/assets/icons/people-outline.svg",
+    },
   ];
   const HendleLogOut = () => {
     sessionStorage.removeItem("x-access-token");
@@ -88,17 +94,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   <Link
                     href={item.href}
-                    className={` ${
-                      router.asPath === item.href ||
+                    className={` ${router.asPath === item.href ||
                       router.asPath === item.href2
-                        ? " text-white font-semibold "
-                        : "text-gray-400 font-medium group-hover:font-semibold group-hover:text-white"
-                    } group flex items-center text-[15px]`}
+                      ? " text-white font-semibold "
+                      : "text-gray-400 font-medium group-hover:font-semibold group-hover:text-white"
+                      } group flex items-center text-[15px]`}
                   >
                     <img
                       src={
                         router.asPath === item.href ||
-                        router.asPath === item.href2
+                          router.asPath === item.href2
                           ? item.icon1
                           : item.icon2
                       }
@@ -108,7 +113,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     {item.name}
                   </Link>
                   {router.asPath === item.href ||
-                  router.asPath === item.href2 ? (
+                    router.asPath === item.href2 ? (
                     <div className="h-full absolute  right-[2px] w-[4px] rounded-[20px] bg-white"></div>
                   ) : (
                     ""

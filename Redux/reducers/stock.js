@@ -16,6 +16,8 @@ export const Stock = (state = initialState, action) => {
         ...state,
         allstock: action.payload
       }
+    case "DELETE_PRODUCT":
+      return { ...state, stock: action.payload }
     case "SET_LOADING":
       return { ...state, error: action.payload };
 

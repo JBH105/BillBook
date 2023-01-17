@@ -6,15 +6,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { AllTransaction } from "../../../Redux/action/transaction";
 import Details from "../../../components/Brand/User/Details";
 import AddStock from "../../../components/Brand/Stock/AddStock";
-import { AllProduct } from "../../../Redux/action/stock";
+import { AllProduct, DeleteProduct } from "../../../Redux/action/stock";
 import BASE_URL from "../../../URL";
 import Image from "../../../components/ImageBox/Image";
+import Tooltip from "../../../components/Tooltip/tooltip";
+import { resetToast, showToast } from "../../../Redux/action/toast";
 
 const InfluencerSearch = () => {
   const dispatch = useDispatch();
   const [profileView, setProfileView] = useState(false);
+  const [stockDetails, setStockDetails] = useState({})
   const [image, setImage] = useState()
   const [open, setOpen] = useState(false)
+  const [tool, setTool] = useState()
+
   const allTransaction = useSelector(
     (state) => state.Transaction.AllTransaction
   );
@@ -34,11 +39,29 @@ const InfluencerSearch = () => {
   useEffect(() => {
     handleTransaction();
   }, [page]);
+
+  const deleteProduct = async (id) => {
+    const response = await dispatch(DeleteProduct(id))
+    if (response?.payload.message) {
+      await dispatch(AllProduct(page))
+      await dispatch(showToast({
+        message: response?.payload.message,
+        time: 5000,
+        id: "SampleToast",
+        type: 200,
+        handleClose: () => { console.log("the toast is closed") }
+      }))
+      setTimeout(() => {
+        dispatch(resetToast())
+      }, 3000)
+    }
+  }
+
   return (
     <>
       <main className="bg-main-bg px-4 sm:px-6 lg:px-[60px]">
         <AddStock
-          userDetail={"userDetail"}
+          userDetail={stockDetails}
           profileView={profileView}
           setProfileView={setProfileView}
         />
@@ -55,7 +78,10 @@ const InfluencerSearch = () => {
                 <button
                   type="submit"
                   className="bg-violet600 shadow-blue100  w-full sm:w-auto block sm:inline-block  focus:outline-none rounded-[4px] sm:rounded-lg py-3 px-[30px] font-semibold text-[15px] leading-[22px] text-white"
-                  onClick={() => setProfileView(true)}
+                  onClick={() => {
+                    setProfileView(true)
+                    setStockDetails({})
+                  }}
                 >
                   Add Stock
                 </button>
@@ -93,6 +119,20 @@ const InfluencerSearch = () => {
                           >
                             Total Quantity
                           </th>
+
+                          <th
+                            scope="col"
+                            className="px-3 py-[9px]   text-left text-[15px] font-semibold text-violet600"
+                          >
+                            Available Quantity
+                          </th>
+                          <th
+                            scope="col"
+                            className="px-3 py-[9px] flex justify-center text-center text-left text-[15px] font-semibold text-violet600"
+                          >
+                            Option
+                          </th>
+
                         </tr>
                       </thead>
                       <tbody>
@@ -118,18 +158,6 @@ const InfluencerSearch = () => {
                                       }} src={`${BASE_URL}/image/${person?.product_Image}`} />
                                     </div>
                                   </div>
-                                  {/* <div className="ml-2">
-                                    <div className="font-semibold text-[13px] leading-5  text-black500">
-                                      {person?.product_ID}
-                                    </div>
-                                    <div className="text-black400 text-[10px] leading-[15px] flex items-center font-medium">
-                                      <img
-                                        src="/assets/icons/location.svg"
-                                        className="mr-1"
-                                      />{" "}
-                                      <span>{person?.vender?.phoneNumber}</span>
-                                    </div>
-                                  </div> */}
                                 </div>
                               </td>
                               <td className="whitespace-nowrap py-3 px-3 text-sm  font-medium text-gray-900 ">
@@ -143,25 +171,31 @@ const InfluencerSearch = () => {
                               <td className="whitespace-nowrap px-3 py-3 leading-5 font-medium  text-xs font-medium text-gray-900">
                                 {person?.total_Quantity}
                               </td>
-
-                              {/* <td className="whitespace-nowrap min-w-[210px] text-center px-3 py-3 text-sm text-gray-500">
+                              <td className="whitespace-nowrap px-3 py-3 text-sm text-gray-500">
                                 <span
-                                  className={`${person.transactionType === "Credit"
+                                  className={`${person.total_Quantity > 15
                                     ? " bg-green100 text-green600"
-                                    : person.transactionType === "Debit"
+                                    : person.total_Quantity < 15 && person.total_Quantity > 5
                                       ? " bg-[#FFEFDB] text-[#FF8B00]"
-                                      : ""
-                                    } text-black400 px-[5px] py-[3px] rounded font-medium leading-[15px] text-[13px] text-center`}
+                                      : "bg-[#f9d6d6] text-[#ff2500]"
+                                    } text-black400 px-[25px] py-[3px] rounded font-medium leading-[15px] text-[13px] text-center`}
                                 >
-                                  {person.transactionType}
+                                  {person.total_Quantity}
                                 </span>
                               </td>
                               <td className="whitespace-nowrap text-sm text-gray-500">
-                                <div className="flex justify-center text-center">
-                                  {person.transactionDate}
-                                </div>
+                                <Tooltip content={tool} direction="left-px">
+                                  <div className="flex justify-center text-center gap-[12px]">
+                                    <img onClick={() => {
+                                      setProfileView(true)
+                                      setStockDetails(person)
+                                    }} onMouseOver={(e) => setTool(e.target.name)} name="Edit stock" src="/assets/icons/edit-2.svg" className="w-[12%] hover:bg-blue-100 hover:rounded-md" />
+                                    <img onMouseOver={(e) => setTool(e.target.name)} name="Outof stock" src="/assets/icons/view-off.svg" className="w-[12%]" />
+                                    <img onClick={() => deleteProduct(person?.id)} onMouseOver={(e) => setTool(e.target.name)} name="Delete stock" src="/assets/icons/trash.svg" className="w-[12%]" />
+                                  </div>
+                                </Tooltip>
                               </td>
-                              <td></td> */}
+                              <td></td>
                             </tr>
                           ))}
                       </tbody>

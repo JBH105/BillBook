@@ -7,11 +7,9 @@ import {
   Menu,
 } from "@headlessui/react";
 import * as Yup from "yup";
-import { VenderTransaction } from "../../../Redux/action/transaction";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { AddProduct, AllProduct } from "../../../Redux/action/stock";
-import Toast from "../../Toast/Index";
 import { resetToast, showToast } from "../../../Redux/action/toast";
 
 const tab = [
@@ -26,11 +24,11 @@ export default function AddStock({ profileView, setProfileView, userDetail }) {
   const [page, setPage] = useState(1);
   const [image, setImage] = useState();
   const initialValues = {
-    id: "",
-    product: "",
-    quantity: "",
-    purchase: "",
-    selling: "",
+    id: userDetail ? userDetail.product_ID : " ",
+    product: userDetail ? userDetail.product_Name : " ",
+    quantity: userDetail ? userDetail.total_Quantity : " ",
+    purchase: userDetail ? userDetail.purchase_Price : " ",
+    selling: userDetail ? userDetail.selling_Price : " ",
   };
 
   const validationSchema = Yup.object({
@@ -49,6 +47,7 @@ export default function AddStock({ profileView, setProfileView, userDetail }) {
     formData.append("purchase_Price", values.purchase);
     formData.append("total_Quantity", values.quantity);
     formData.append("selling_Price", values.selling);
+    formData.append("ID", userDetail?.id)
 
     const response = await dispatch(AddProduct(formData));
 
