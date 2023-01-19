@@ -55,8 +55,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       icon1: "/assets/icons/speak.svg",
     },
     {
-      name: "Billing",
-      href: "/brand/billing",
+      name: "sale Invoice",
+      href: "/brand/sale",
       icon1: "/assets/icons/people-white.svg",
       icon2: "/assets/icons/people-outline.svg",
     },
