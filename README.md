@@ -48,6 +48,6 @@ After installing the node modules and entering into our branch, we are now ready
 ![alt text](https://www.linkpicture.com/q/907iHBp-Imgur.png)
 
 
-## License
+<!-- ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT](https://choosealicense.com/licenses/mit/) -->
