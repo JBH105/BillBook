@@ -36,7 +36,7 @@ After the project has been cloned you can open it from any of the code editor an
 Note:- If npm install doesn’t work for you then you can also do the yarn install.
 Then run the command git checkout <branchname>, to navigate to our branch in which our code is there.
 
-![alt text](https://i.imgur.com/ZRp5B0D.png)
+<!-- ![alt text](https://i.imgur.com/ZRp5B0D.png) -->
 
 
 ## Step 5
@@ -45,7 +45,7 @@ After installing the node modules and entering into our branch, we are now ready
 
 
 ![alt text](https://i.imgur.com/3Evu9dJ.png)
-![alt text](https://i.imgur.com/JqzMqh5.png)
+![alt text](https://www.linkpicture.com/q/907iHBp-Imgur.png)
 
 
 ## License
