@@ -33,6 +33,7 @@ export default function SaleInvoice({
   const [date, setDate] = useState(new Date());
   const [page, setPage] = useState(1);
   const [image, setImage] = useState();
+  const [data, setData] = useState([{ productName: "", productQTY: "" }]);
   const initialValues = {
     id: userDetail ? userDetail.product_ID : " ",
     product: userDetail ? userDetail.product_Name : " ",
@@ -96,6 +97,23 @@ export default function SaleInvoice({
     }
   };
 
+  const handleChange = (i, e) => {
+    const { name } = e.target;
+    const text = e.target.value;
+    let newFormValues = [...data];
+    newFormValues[i][name] = text;
+    setData(newFormValues);
+  };
+
+  const HandleRemov = (i) => {
+    const list = [...data];
+    list.splice(i, 1);
+    setData(list);
+  };
+
+  const Handle = (e) => {
+    setData([...data, { productName: "", productQTY: "" }]);
+  };
   return (
     <div>
       <div className="">
@@ -206,156 +224,16 @@ export default function SaleInvoice({
                                 </div>
                               </div>
 
-                              {/* <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                                                <div className=" inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                                                                    <div className="overflow-hidden ">
-                                                                        <table className="min-w-full ">
-                                                                            <thead className="bg-white">
-                                                                                <tr>
-                                                                                    <th
-                                                                                        scope="col"
-                                                                                        className="px-3 py-[9px]  text-left text-[15px] font-semibold text-violet600"
-                                                                                    >
-                                                                                        Product Image
-                                                                                    </th>
-                                                                                    <th
-                                                                                        scope="col"
-                                                                                        className="px-3 py-[9px]  text-left text-[15px] font-semibold text-violet600"
-                                                                                    >
-                                                                                        Product ID
-                                                                                    </th>
-                                                                                    <th
-                                                                                        scope="col"
-                                                                                        className="px-3 py-[9px]   text-left text-[15px] font-semibold text-violet600"
-                                                                                    >
-                                                                                        Product Name
-                                                                                    </th>
-                                                                                    <th
-                                                                                        scope="col"
-                                                                                        className="px-3 py-[9px]   text-left text-[15px] font-semibold text-violet600"
-                                                                                    >
-                                                                                        Total Quantity
-                                                                                    </th>
-
-                                                                                    <th
-                                                                                        scope="col"
-                                                                                        className="px-3 py-[9px]   text-left text-[15px] font-semibold text-violet600"
-                                                                                    >
-                                                                                        Available Quantity
-                                                                                    </th>
-                                                                                    <th
-                                                                                        scope="col"
-                                                                                        className="px-3 py-[9px] flex justify-center text-center text-left text-[15px] font-semibold text-violet600"
-                                                                                    >
-                                                                                        Option
-                                                                                    </th>
-
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-
-                                                                                <tr
-
-                                                                                >
-                                                                                    <td className="whitespace-nowrap py-3 px-3 cursor-pointer text-sm ">
-
-                                                                                    </td>
-                                                                                    <td className="whitespace-nowrap py-3 px-3 text-sm  font-medium text-gray-900 ">
-                                                                                        <div className="flex space-x-[7px]">
-                                                                                            <div className="">123</div>
-                                                                                        </div>
-                                                                                    </td>
-                                                                                    <td className="whitespace-nowrap px-3 py-3 leading-5 font-medium  text-sm font-medium text-gray-900">
-                                                                                        <div className=" ">123</div>
-                                                                                    </td>
-                                                                                    <td className="whitespace-nowrap px-3 py-3 leading-5 font-medium  text-xs font-medium text-gray-900">
-                                                                                        2
-                                                                                    </td>
-                                                                                    <td className="whitespace-nowrap px-3 py-3 text-sm text-gray-500">
-                                                                                        <span
-                                                                                        >
-                                                                                            1
-                                                                                        </span>
-                                                                                    </td>
-                                                                                    <td></td>
-                                                                                    <td></td>
-                                                                                </tr>
-
-                                                                            </tbody>
-                                                                        </table>
-                                                                    </div>
-                                                                </div>
-                                                            </div> */}
-
-                              {/* <div className="relative overflow-x-auto">
-                                                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                                                    <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
-                                                                        <tr>
-                                                                            <th scope="col" className="px-6 py-3 rounded-l-lg">
-                                                                                Product name
-                                                                            </th>
-                                                                            <th scope="col" className="px-6 py-3">
-                                                                                Qty
-                                                                            </th>
-                                                                            <th scope="col" className="px-6 py-3 rounded-r-lg">
-                                                                                Price
-                                                                            </th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr className="bg-white dark:bg-gray-800">
-                                                                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                                                Apple MacBook Pro 17"
-                                                                            </th>
-                                                                            <td className="px-6 py-4">
-                                                                                1
-                                                                            </td>
-                                                                            <td className="px-6 py-4">
-                                                                                $2999
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr className="bg-white dark:bg-gray-800">
-                                                                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                                                Microsoft Surface Pro
-                                                                            </th>
-                                                                            <td className="px-6 py-4">
-                                                                                1
-                                                                            </td>
-                                                                            <td className="px-6 py-4">
-                                                                                $1999
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr className="bg-white dark:bg-gray-800">
-                                                                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                                                Magic Mouse 2
-                                                                            </th>
-                                                                            <td className="px-6 py-4">
-                                                                                1
-                                                                            </td>
-                                                                            <td className="px-6 py-4">
-                                                                                $99
-                                                                            </td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                    <tfoot>
-                                                                        <tr className="font-semibold text-gray-900 dark:text-white">
-                                                                            <th scope="row" className="px-6 py-3 text-base">Total</th>
-                                                                            <td className="px-6 py-3">3</td>
-                                                                            <td className="px-6 py-3">21,000</td>
-                                                                        </tr>
-                                                                    </tfoot>
-                                                                </table>
-                                                            </div> */}
-
                               <div className="flex flex-col">
                                 <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                                   <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                                     <div className="overflow-hidden">
                                       <table className="min-w-full border text-center">
                                         <thead className="border-b">
-                                          <tr>
+                                          <tr className="border-b">
                                             <th
                                               scope="col"
+                                              rowspan="2"
                                               className="text-sm font-medium text-gray-900 py-4 border-r"
                                             >
                                               #
@@ -363,50 +241,37 @@ export default function SaleInvoice({
                                             <th
                                               colspan="2"
                                               scope="col"
+                                              rowspan="2"
                                               className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
                                             >
                                               ITEM
                                             </th>
                                             <th
                                               scope="col"
+                                              rowspan="2"
                                               className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
                                             >
                                               QTY
                                             </th>
                                             <th
                                               scope="col"
-                                              className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
+                                              colspan="2"
+                                              className="text-sm font-medium text-gray-900 px-6"
                                             >
-                                              <div>
-                                                <span>PRICE/UNIT</span>
-                                              </div>
-                                              <hr />
-
-                                              <div className="mt-3">
-                                                <select>
-                                                  <option>With text</option>
-                                                  <option>Without text</option>
-                                                </select>
-                                              </div>
+                                              PRICE/UNIT
                                             </th>
 
                                             <th
                                               scope="col"
-                                              className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
+                                              colspan="2"
+                                              className="text-sm font-medium text-gray-900 px-6 border-l border-r"
                                             >
-                                              <p className="border-b">
-                                                DISCOUNT
-                                              </p>
-                                              <div className="gap-[10px] flex justify-center">
-                                                <span className="border-r">
-                                                  %
-                                                </span>
-                                                <span className="">AMOUNT</span>
-                                              </div>
+                                              DISCOUNT
                                             </th>
 
                                             <th
                                               scope="col"
+                                              colspan="2"
                                               className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
                                             >
                                               TAX
@@ -414,43 +279,174 @@ export default function SaleInvoice({
 
                                             <th
                                               scope="col"
+                                              rowspan="2"
                                               className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
                                             >
-                                              AMOUNT
+                                              <div className="flex justify-between w-full">
+                                                <span>AMOUNT</span>
+                                                <img
+                                                  src="/assets/icons8.png"
+                                                  onClick={Handle}
+                                                />
+                                              </div>
+                                            </th>
+                                          </tr>
+                                          <tr>
+                                            <th
+                                              scope="col"
+                                              className="text-sm font-medium text-gray-900 px-6  border-l border-r"
+                                            >
+                                              <span className="">With Tax</span>
+                                            </th>
+                                            <th
+                                              scope="col"
+                                              className="text-sm font-medium text-gray-900 px-6  border-l border-r"
+                                            >
+                                              <span className="">
+                                                Without Tax
+                                              </span>
+                                            </th>
+                                            <th
+                                              scope="col"
+                                              className="text-sm font-medium text-gray-900 px-6  border-l border-r"
+                                            >
+                                              <span className="">%</span>
+                                            </th>
+                                            <th
+                                              scope="col"
+                                              className="text-sm font-medium text-gray-900 px-6  border-l border-r"
+                                            >
+                                              <span className="">AMOUNT</span>
+                                            </th>
+                                            <th
+                                              scope="col"
+                                              className="text-sm font-medium text-gray-900 px-6  border-l border-r"
+                                            >
+                                              <span className="">%</span>
+                                            </th>
+                                            <th
+                                              scope="col"
+                                              className="text-sm font-medium text-gray-900 px-6  border-l border-r"
+                                            >
+                                              <span className="">AMOUNT</span>
                                             </th>
                                           </tr>
                                         </thead>
                                         <tbody>
-                                          <tr className="border-b">
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r">
-                                              1
-                                            </td>
-                                            <td
-                                              rowspan="1"
-                                              className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r"
-                                            >
-                                              Mark
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r">
-                                              Otto
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r">
-                                              Otto
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r">
-                                              Otto
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r">
-                                              Otto
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r">
-                                              Otto
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r">
-                                              Otto
-                                            </td>
-                                          </tr>
-                                          <tr className="bg-white border-b">
+                                          {data &&
+                                            data.map((item, i) => {
+                                              return (
+                                                <tr className="border-b">
+                                                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r">
+                                                    {i}
+                                                  </td>
+                                                  <td
+                                                    colspan="2"
+                                                    className="border-r"
+                                                  >
+                                                    <input
+                                                      type="text"
+                                                      name="productName"
+                                                      className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
+                                                      onChange={(e) =>
+                                                        handleChange(i, e)
+                                                      }
+                                                    />
+                                                  </td>
+                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                    <input
+                                                      type="number"
+                                                      name="productQTY"
+                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                      onChange={(e) =>
+                                                        handleChange(i, e)
+                                                      }
+                                                    />
+                                                  </td>
+                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                    <input
+                                                      type="number"
+                                                      name="priceWithText"
+                                                      onChange={(e) =>
+                                                        handleChange(i, e)
+                                                      }
+                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                    />
+                                                  </td>
+                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                    <input
+                                                      type="number"
+                                                      name="priceWithoutText"
+                                                      onChange={(e) =>
+                                                        handleChange(i, e)
+                                                      }
+                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                    />
+                                                  </td>
+                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                    <input
+                                                      name="discountWith%"
+                                                      type="number"
+                                                      onChange={(e) =>
+                                                        handleChange(i, e)
+                                                      }
+                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                    />
+                                                  </td>
+                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                    <input
+                                                      name="discountWithAmount"
+                                                      type="number"
+                                                      onChange={(e) =>
+                                                        handleChange(i, e)
+                                                      }
+                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                    />
+                                                  </td>
+                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                    <input
+                                                      name="taxWith%"
+                                                      type="number"
+                                                      onChange={(e) =>
+                                                        handleChange(i, e)
+                                                      }
+                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                    />
+                                                  </td>
+                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                    <input
+                                                      name="taxWithAmount"
+                                                      type="number"
+                                                      onChange={(e) =>
+                                                        handleChange(i, e)
+                                                      }
+                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                    />
+                                                  </td>
+                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                    <input
+                                                      name="amount"
+                                                      type="number"
+                                                      onChange={(e) =>
+                                                        handleChange(i, e)
+                                                      }
+                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                    />
+                                                  </td>
+                                                  {/* <button onClick={Handle}>
+                                                    add
+                                                  </button>
+                                                  <button
+                                                    onClick={() =>
+                                                      HandleRemov(i)
+                                                    }
+                                                  >
+                                                    remove
+                                                  </button> */}
+                                                </tr>
+                                              );
+                                            })}
+                                          {/* <tr className="bg-white border-b">
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r">
                                               2
                                             </td>
@@ -463,19 +459,38 @@ export default function SaleInvoice({
                                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                               @fat
                                             </td>
-                                          </tr>
+                                          </tr> */}
                                           <tr className="bg-white border-b">
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r">
-                                              3
-                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 "></td>
                                             <td
                                               colspan="2"
                                               className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-center border-r"
                                             >
-                                              Larry the Bird
+                                              Totale
                                             </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              @twitter
+                                            <td className=" border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                              0
+                                            </td>
+                                            <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                              0
+                                            </td>
+                                            <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                              0
+                                            </td>
+                                            <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                              0
+                                            </td>
+                                            <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                              0
+                                            </td>
+                                            <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                              0
+                                            </td>
+                                            <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                              0
+                                            </td>
+                                            <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                              0
                                             </td>
                                           </tr>
                                         </tbody>
