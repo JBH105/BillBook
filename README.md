@@ -8,7 +8,7 @@ System Requirements
 
 Get the url of the github repository of the project.
 
-![alt text](https://i.imgur.com/WClZlaB.png)
+<!-- ![alt text](https://i.imgur.com/WClZlaB.png) -->
 
 ## Step 2
 
@@ -16,7 +16,7 @@ Open the terminal with the specific path where you want to set up the project an
 
 Command:- git clone <url>
 
-![alt text](https://i.imgur.com/WOl3F4d.png)
+<!-- ![alt text](https://i.imgur.com/WOl3F4d.png) -->
 
 
 ## Step 3
