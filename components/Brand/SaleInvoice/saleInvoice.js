@@ -10,6 +10,7 @@ import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { AddProduct, AllProduct } from "../../../Redux/action/stock";
 import { resetToast, showToast } from "../../../Redux/action/toast";
+import { AddInvoice, AllInvoice } from "../../../Redux/action/saleInvoice";
 
 const tab = [
   {
@@ -33,36 +34,49 @@ export default function SaleInvoice({
   const [date, setDate] = useState(new Date());
   const [page, setPage] = useState(1);
   const [image, setImage] = useState();
-  const [data, setData] = useState([{ productName: "", productQTY: "" }]);
-  const initialValues = {
-    id: userDetail ? userDetail.product_ID : " ",
-    product: userDetail ? userDetail.product_Name : " ",
-    quantity: userDetail ? userDetail.total_Quantity : " ",
-    purchase: userDetail ? userDetail.purchase_Price : " ",
-    selling: userDetail ? userDetail.selling_Price : " ",
+  const [saleData, setSaleData] = useState({});
+  const [data, setData] = useState([{ productId: "", qty: "" }]);
+
+  const HandleSaleData = async (e) => {
+    setSaleData({ ...saleData, [e.target.name]: e.target.value });
   };
 
-  const validationSchema = Yup.object({
-    id: Yup.string().required("Product id is required"),
-    product: Yup.string().required("Product name is required"),
-    quantity: Yup.string().required("Total quantity is required"),
-    purchase: Yup.string().required("Purchase price is required"),
-    selling: Yup.string().required("Selling price is required"),
-  });
+  const handleChange = (i, e) => {
+    const { name } = e.target;
+    const text = e.target.value;
+    let newFormValues = [...data];
+    newFormValues[i][name] = text;
+    setData(newFormValues);
+    
+    let sum = 0;
+    data.map((item) => {
+      sum = sum + parseInt(item.qty);
+      return sum;
+    });
+    console.log(sum, "productQTY");
+  };
 
-  const HandleData = async (values) => {
-    let formData = new FormData();
-    formData.append("image", image);
-    formData.append("product_ID", values.id);
-    formData.append("product_Name", values.product);
-    formData.append("purchase_Price", values.purchase);
-    formData.append("total_Quantity", values.quantity);
-    formData.append("selling_Price", values.selling);
-    formData.append("ID", userDetail?.id);
+  const HandleRemov = (i) => {
+    const list = [...data];
+    list.splice(i, 1);
+    setData(list);
+  };
 
-    const response = await dispatch(AddProduct(formData));
+  const Handle = (e) => {
+    setData([...data, { productId: "", qty: "" }]);
+  };
 
-    await dispatch(AllProduct(page));
+  const HandleInvoice = async () => {
+    const invoicedata = {
+      user_Name: saleData.user_Name,
+      phoneNo: saleData.phoneNo,
+      invoice_Date: saleData.invoice_Date,
+      stateOfSupply: saleData.stateOfSupply,
+      product: data,
+    };
+
+    const response = await dispatch(AddInvoice(invoicedata));
+    await dispatch(AllInvoice(1));
     if (response?.payload.message) {
       await dispatch(
         showToast({
@@ -95,24 +109,6 @@ export default function SaleInvoice({
         dispatch(resetToast());
       }, 3000);
     }
-  };
-
-  const handleChange = (i, e) => {
-    const { name } = e.target;
-    const text = e.target.value;
-    let newFormValues = [...data];
-    newFormValues[i][name] = text;
-    setData(newFormValues);
-  };
-
-  const HandleRemov = (i) => {
-    const list = [...data];
-    list.splice(i, 1);
-    setData(list);
-  };
-
-  const Handle = (e) => {
-    setData([...data, { productName: "", productQTY: "" }]);
   };
   return (
     <div>
@@ -171,10 +167,11 @@ export default function SaleInvoice({
                                     </label>
                                     <input
                                       id="id"
-                                      name="id"
+                                      name="user_Name"
                                       type="text"
                                       placeholder="DL-12"
                                       className="md:max-w-[350px] inputbg focus:bg-white/[0.25] focus:bg-white/[0.25] w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
+                                      onChange={(e) => HandleSaleData(e)}
                                     />
                                   </div>
                                   <div className="">
@@ -183,10 +180,11 @@ export default function SaleInvoice({
                                     </label>
                                     <input
                                       id="id"
-                                      name="id"
+                                      name="phoneNo"
                                       type="number"
                                       placeholder="0123456789"
                                       className="md:max-w-[350px] inputbg focus:bg-white/[0.25] focus:bg-white/[0.25] w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
+                                      onChange={(e) => HandleSaleData(e)}
                                     />
                                   </div>
                                 </div>
@@ -205,15 +203,21 @@ export default function SaleInvoice({
                                     </label>
                                     <input
                                       type="date"
+                                      name="invoive_Date"
                                       className=" w-full min-w-[70px] text-center text-[13px] font-medium leading-5 text-gray700"
                                       defaultValue={date}
+                                      onChange={(e) => HandleSaleData(e)}
                                     />
                                   </div>
                                   <div className="flex gap-[33px]">
                                     <label className="block whitespace-nowrap md:mb-1 text-[13px] font-medium leading-5 text-gray700">
                                       State of supply
                                     </label>
-                                    <select className=" w-full border-b-2 min-w-[70px] text-center text-[13px] font-medium leading-5 text-gray700">
+                                    <select
+                                      name="stateOfSupply"
+                                      className=" w-full border-b-2 min-w-[70px] text-center text-[13px] font-medium leading-5 text-gray700"
+                                      onChange={(e) => HandleSaleData(e)}
+                                    >
                                       <option value="Select state">
                                         Select state
                                       </option>
@@ -346,7 +350,7 @@ export default function SaleInvoice({
                                                   >
                                                     <input
                                                       type="text"
-                                                      name="productName"
+                                                      name="productId"
                                                       className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
                                                       onChange={(e) =>
                                                         handleChange(i, e)
@@ -356,7 +360,7 @@ export default function SaleInvoice({
                                                   <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
                                                     <input
                                                       type="number"
-                                                      name="productQTY"
+                                                      name="qty"
                                                       className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
                                                       onChange={(e) =>
                                                         handleChange(i, e)
@@ -366,7 +370,7 @@ export default function SaleInvoice({
                                                   <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
                                                     <input
                                                       type="number"
-                                                      name="priceWithText"
+                                                      name="priceWithTax"
                                                       onChange={(e) =>
                                                         handleChange(i, e)
                                                       }
@@ -376,7 +380,7 @@ export default function SaleInvoice({
                                                   <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
                                                     <input
                                                       type="number"
-                                                      name="priceWithoutText"
+                                                      name="priceWithoutTax"
                                                       onChange={(e) =>
                                                         handleChange(i, e)
                                                       }
@@ -385,7 +389,7 @@ export default function SaleInvoice({
                                                   </td>
                                                   <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
                                                     <input
-                                                      name="discountWith%"
+                                                      name="discountWithPercentage"
                                                       type="number"
                                                       onChange={(e) =>
                                                         handleChange(i, e)
@@ -405,7 +409,7 @@ export default function SaleInvoice({
                                                   </td>
                                                   <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
                                                     <input
-                                                      name="taxWith%"
+                                                      name="taxWithPercentage"
                                                       type="number"
                                                       onChange={(e) =>
                                                         handleChange(i, e)
@@ -504,6 +508,7 @@ export default function SaleInvoice({
                               <button
                                 type="submit"
                                 className="opacity-[0.3] bg-violet600 shadow-blue100  w-full sm:w-auto block sm:inline-block  focus:outline-none rounded-[4px] sm:rounded-lg py-3 px-[30px] font-semibold text-[15px] leading-[22px] text-white"
+                                onClick={() => HandleInvoice()}
                               >
                                 Save Changes
                               </button>
