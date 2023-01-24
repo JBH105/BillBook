@@ -1,5 +1,4 @@
 import { CheckIcon } from "@heroicons/react/24/outline";
-import dynamic from "next/dynamic";
 import React, { useEffect, useRef, useState } from "react";
 import useWidth from "../hooks/useWidth";
 
@@ -30,7 +29,6 @@ const Task = ({ item, moretask }) => {
                       ? "bg-[#F3FFF7] border-[#0CB947]"
                       : "bg-white border-border-[#eeeeee]"
                   } relative shadow-task border-[0.8px]  min-w-[120px] pl-3 pr-2 py-[4px] border rounded flex items-center `}
-                  // className="relative min-w-[120px] pl-3 pr-2 py-[5px] rounded bg-white flex items-cneter justify-center"
                 >
                  
                   <div

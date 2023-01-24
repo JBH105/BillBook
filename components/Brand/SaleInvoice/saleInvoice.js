@@ -1,14 +1,12 @@
-import React, { Fragment, useState, Component, useEffect } from "react";
+import React, { Fragment, useState } from "react";
 import {
-  Disclosure,
   Dialog,
   Transition,
-  Listbox,
-  Menu,
+  Combobox,
 } from "@headlessui/react";
-import * as Yup from "yup";
+import { CheckIcon } from "@heroicons/react/20/solid";
+
 import { useDispatch, useSelector } from "react-redux";
-import { AddProduct, AllProduct } from "../../../Redux/action/stock";
 import { resetToast, showToast } from "../../../Redux/action/toast";
 import { AddInvoice, AllInvoice } from "../../../Redux/action/saleInvoice";
 
@@ -24,18 +22,30 @@ const tab = [
   },
 ];
 
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 export default function SaleInvoice({
   profileView,
   setProfileView,
   userDetail,
 }) {
   const dispatch = useDispatch();
-  const Product = useSelector((state) => state.Product.stock);
+  const Product = useSelector((state) => state.Product.allstock);
   const [date, setDate] = useState(new Date());
-  const [page, setPage] = useState(1);
-  const [image, setImage] = useState();
   const [saleData, setSaleData] = useState({});
   const [data, setData] = useState([{ productId: "", qty: "" }]);
+  const [total, setTotal] = useState({});
+
+  const [query, setQuery] = useState("");
+  const [selectedPerson, setSelectedPerson] = useState(null);
+
+  const filteredPeople =
+    query === ""
+      ? Product.data
+      : Product.data.filter((person) => {
+          return person.product_ID.toLowerCase().includes(query.toLowerCase());
+        });
 
   const HandleSaleData = async (e) => {
     setSaleData({ ...saleData, [e.target.name]: e.target.value });
@@ -47,13 +57,54 @@ export default function SaleInvoice({
     let newFormValues = [...data];
     newFormValues[i][name] = text;
     setData(newFormValues);
-    
     let sum = 0;
-    data.map((item) => {
-      sum = sum + parseInt(item.qty);
-      return sum;
+    let priceWithTax = 0;
+    let priceWithoutTax = 0;
+    let discountWithPercentage = 0;
+    let discountWithAmount = 0;
+    let taxWithPercentage = 0;
+    let taxWithAmount = 0;
+
+    data?.forEach((item, index) => {
+      sum = (parseInt(item.qty) ? parseInt(item.qty) : 0) + sum;
+
+      priceWithTax =
+        (parseInt(item.priceWithTax) ? parseInt(item.priceWithTax) : 0) +
+        priceWithTax;
+
+      priceWithoutTax =
+        (parseInt(item.priceWithoutTax) ? parseInt(item.priceWithoutTax) : 0) +
+        priceWithoutTax;
+
+      discountWithPercentage =
+        (parseInt(item.discountWithPercentage)
+          ? parseInt(item.discountWithPercentage)
+          : 0) + discountWithPercentage;
+
+      discountWithAmount =
+        (parseInt(item.discountWithAmount)
+          ? parseInt(item.discountWithAmount)
+          : 0) + discountWithAmount;
+
+      taxWithPercentage =
+        (parseInt(item.taxWithPercentage)
+          ? parseInt(item.taxWithPercentage)
+          : 0) + taxWithPercentage;
+
+      taxWithAmount =
+        (parseInt(item.taxWithAmount) ? parseInt(item.taxWithAmount) : 0) +
+        taxWithAmount;
+
+      setTotal({
+        ...total,
+        totalQTY: sum,
+        price: priceWithTax,
+        discountWithPercentage: discountWithPercentage,
+        discountWithAmount: discountWithAmount,
+        taxWithPercentage: taxWithPercentage,
+        taxWithAmount: taxWithAmount,
+      });
     });
-    console.log(sum, "productQTY");
   };
 
   const HandleRemov = (i) => {
@@ -95,21 +146,23 @@ export default function SaleInvoice({
       setProfileView(false);
     } else {
       await dispatch(
+
         showToast({
-          message: response?.payload.data.message,
+          message: response?.payload.data.message.parent.sqlMessage,
           time: 5000,
           id: "SampleToast",
           type: 400,
           handleClose: () => {
             console.log("the toast is closed");
           },
-        })
+        }) 
       );
       setTimeout(() => {
         dispatch(resetToast());
       }, 3000);
     }
   };
+
   return (
     <div>
       <div className="">
@@ -231,7 +284,7 @@ export default function SaleInvoice({
                               <div className="flex flex-col">
                                 <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                                   <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                                    <div className="overflow-hidden">
+                                    <div className="overflow-hidden pb-[80px]">
                                       <table className="min-w-full border text-center">
                                         <thead className="border-b">
                                           <tr className="border-b">
@@ -246,7 +299,7 @@ export default function SaleInvoice({
                                               colspan="2"
                                               scope="col"
                                               rowspan="2"
-                                              className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
+                                              className="text-sm font-medium min-w-[250px] max-w-[251px] text-gray-900 px-6 py-4 border-r"
                                             >
                                               ITEM
                                             </th>
@@ -259,7 +312,7 @@ export default function SaleInvoice({
                                             </th>
                                             <th
                                               scope="col"
-                                              colspan="2"
+                                              rowspan="2"
                                               className="text-sm font-medium text-gray-900 px-6"
                                             >
                                               PRICE/UNIT
@@ -300,20 +353,6 @@ export default function SaleInvoice({
                                               scope="col"
                                               className="text-sm font-medium text-gray-900 px-6  border-l border-r"
                                             >
-                                              <span className="">With Tax</span>
-                                            </th>
-                                            <th
-                                              scope="col"
-                                              className="text-sm font-medium text-gray-900 px-6  border-l border-r"
-                                            >
-                                              <span className="">
-                                                Without Tax
-                                              </span>
-                                            </th>
-                                            <th
-                                              scope="col"
-                                              className="text-sm font-medium text-gray-900 px-6  border-l border-r"
-                                            >
                                               <span className="">%</span>
                                             </th>
                                             <th
@@ -348,14 +387,95 @@ export default function SaleInvoice({
                                                     colspan="2"
                                                     className="border-r"
                                                   >
-                                                    <input
-                                                      type="text"
-                                                      name="productId"
-                                                      className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                                                      onChange={(e) =>
-                                                        handleChange(i, e)
+                                                    <Combobox
+                                                      className="h-full  "
+                                                      as="div"
+                                                      value={item.product_ID}
+                                                      onChange={
+                                                        setSelectedPerson
                                                       }
-                                                    />
+                                                    >
+                                                      <Combobox.Label className="block text-sm font-medium text-gray-700"></Combobox.Label>
+                                                      <div className="relative h-full">
+                                                        <Combobox.Input
+                                                          className="w-full h-full px-6 py-4 sm:text-sm"
+                                                          name="productId"
+                                                          onChange={(event) => {
+                                                            setQuery(
+                                                              event.target.value
+                                                            );
+                                                            handleChange(
+                                                              i,
+                                                              event
+                                                            );
+                                                          }}
+                                                          displayValue={(
+                                                            person
+                                                          ) =>
+                                                            person?.product_ID
+                                                          }
+                                                        />
+                                                        {filteredPeople.length >
+                                                          0 && (
+                                                          <Combobox.Options className="absolute z-[99999] custom-scroll max-h-[118px] mt-1 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                                            {filteredPeople.map(
+                                                              (person) => (
+                                                                <Combobox.Option
+                                                                  key={
+                                                                    person.id
+                                                                  }
+                                                                  value={person}
+                                                                  className={({
+                                                                    active,
+                                                                  }) =>
+                                                                    classNames(
+                                                                      "relative cursor-default select-none py-2 pl-9 pr-3",
+                                                                      active
+                                                                        ? "bg-indigo-600 text-white"
+                                                                        : "text-gray-900"
+                                                                    )
+                                                                  }
+                                                                >
+                                                                  {({
+                                                                    active,
+                                                                    selected,
+                                                                  }) => (
+                                                                    <>
+                                                                      {selected && (
+                                                                        <span
+                                                                          className={classNames(
+                                                                            "absolute inset-y-0 left-[10px] flex items-center pr-4",
+                                                                            active
+                                                                              ? "text-white"
+                                                                              : "text-indigo-600"
+                                                                          )}
+                                                                        >
+                                                                          <CheckIcon
+                                                                            className="h-5 w-5"
+                                                                            aria-hidden="true"
+                                                                          />
+                                                                        </span>
+                                                                      )}
+                                                                      <span
+                                                                        className={classNames(
+                                                                          "block truncate text-left",
+                                                                          selected &&
+                                                                            "font-semibold"
+                                                                        )}
+                                                                      >
+                                                                        {
+                                                                          person.product_ID
+                                                                        }
+                                                                      </span>
+                                                                    </>
+                                                                  )}
+                                                                </Combobox.Option>
+                                                              )
+                                                            )}
+                                                          </Combobox.Options>
+                                                        )}
+                                                      </div>
+                                                    </Combobox>
                                                   </td>
                                                   <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
                                                     <input
@@ -379,18 +499,11 @@ export default function SaleInvoice({
                                                   </td>
                                                   <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
                                                     <input
-                                                      type="number"
-                                                      name="priceWithoutTax"
-                                                      onChange={(e) =>
-                                                        handleChange(i, e)
-                                                      }
-                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
-                                                    />
-                                                  </td>
-                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
-                                                    <input
                                                       name="discountWithPercentage"
                                                       type="number"
+                                                      disabled={Boolean(
+                                                        item.discountWithAmount
+                                                      )}
                                                       onChange={(e) =>
                                                         handleChange(i, e)
                                                       }
@@ -401,6 +514,9 @@ export default function SaleInvoice({
                                                     <input
                                                       name="discountWithAmount"
                                                       type="number"
+                                                      disabled={Boolean(
+                                                        item.discountWithPercentage
+                                                      )}
                                                       onChange={(e) =>
                                                         handleChange(i, e)
                                                       }
@@ -411,6 +527,9 @@ export default function SaleInvoice({
                                                     <input
                                                       name="taxWithPercentage"
                                                       type="number"
+                                                      disabled={Boolean(
+                                                        item.taxWithAmount
+                                                      )}
                                                       onChange={(e) =>
                                                         handleChange(i, e)
                                                       }
@@ -421,6 +540,9 @@ export default function SaleInvoice({
                                                     <input
                                                       name="taxWithAmount"
                                                       type="number"
+                                                      disabled={Boolean(
+                                                        item.taxWithPercentage
+                                                      )}
                                                       onChange={(e) =>
                                                         handleChange(i, e)
                                                       }
@@ -437,61 +559,34 @@ export default function SaleInvoice({
                                                       className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
                                                     />
                                                   </td>
-                                                  {/* <button onClick={Handle}>
-                                                    add
-                                                  </button>
-                                                  <button
-                                                    onClick={() =>
-                                                      HandleRemov(i)
-                                                    }
-                                                  >
-                                                    remove
-                                                  </button> */}
                                                 </tr>
                                               );
                                             })}
-                                          {/* <tr className="bg-white border-b">
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r">
-                                              2
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r">
-                                              Jacob
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r">
-                                              Thornton
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              @fat
-                                            </td>
-                                          </tr> */}
                                           <tr className="bg-white border-b">
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 "></td>
                                             <td
                                               colspan="2"
                                               className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-center border-r"
                                             >
-                                              Totale
+                                              Total
                                             </td>
                                             <td className=" border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              0
+                                              {total.totalQTY}
+                                            </td>
+                                            <td className=" border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                              {total.price}
                                             </td>
                                             <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              0
+                                              {total.discountWithPercentage}
                                             </td>
                                             <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              0
+                                              {total.discountWithAmount}
                                             </td>
                                             <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              0
+                                              {total.taxWithPercentage}
                                             </td>
                                             <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              0
-                                            </td>
-                                            <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              0
-                                            </td>
-                                            <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              0
+                                              {total.taxWithAmount}
                                             </td>
                                             <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                               0
@@ -504,7 +599,7 @@ export default function SaleInvoice({
                                 </div>
                               </div>
                             </div>
-                            <div className="space-y-3 sm:space-x-[30px] mt-9 md:mt-[60px]">
+                            <div className="space-y-3 sm:space-x-[30px] ">
                               <button
                                 type="submit"
                                 className="opacity-[0.3] bg-violet600 shadow-blue100  w-full sm:w-auto block sm:inline-block  focus:outline-none rounded-[4px] sm:rounded-lg py-3 px-[30px] font-semibold text-[15px] leading-[22px] text-white"

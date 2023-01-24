@@ -1,4 +1,3 @@
-import Link from "next/link";
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -70,14 +69,12 @@ const ForgotPassword = () => {
                       </div>
                     </div>
                     <div className="mt-[60px]">
-                      {/* <Link href='/influencer/verification'> */}
                       <button
                         type="submit"
                         className="flex w-full justify-center rounded border border-transparent bg-violet600 py-3 px-4 text-[15px] font-semibold text-white shadow-sm  focus:outline-none focus:ring-0 "
                       >
                         Submit
                       </button>
-                      {/* </Link> */}
                     </div>
                     <div className="flex justify-center mt-[75px]">
                       <button

@@ -1,10 +1,8 @@
-import React, { Fragment, useState, Component, useEffect } from "react";
+import React, { Fragment, useState} from "react";
 import {
-  Disclosure,
   Dialog,
   Transition,
-  Listbox,
-  Menu,
+
 } from "@headlessui/react";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
@@ -277,7 +275,6 @@ export default function AddStock({ profileView, setProfileView, userDetail }) {
                                             Upload Product Image
                                           </label>
                                         </div>
-                                        {/* <button htmlFor="image" className='flex bg-gray50 rounded-[6px] mt-7 mx-auto py-[8.5px] px-[12.6px]  items-center text-[15.8px] font-semibold text-gray700'><img src="/assets/icons/upload.svg" className='mr-1' />Upload Photo</button> */}
                                       </div>
                                     </div>
                                   </div>

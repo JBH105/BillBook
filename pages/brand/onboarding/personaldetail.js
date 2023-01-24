@@ -110,7 +110,6 @@ export default function Personaldetail() {
                           Upload Photo
                         </label>
                       </div>
-                      {/* <button htmlFor="image" className='flex bg-gray50 rounded-[6px] mt-7 mx-auto py-[8.5px] px-[12.6px]  items-center text-[15.8px] font-semibold text-gray700'><img src="/assets/icons/upload.svg" className='mr-1' />Upload Photo</button> */}
                     </div>
 
                     <div className="space-y-5 mt-[52px] px-4 sm:px-6  lg:px-20 xl:px-[134px]">
@@ -215,7 +214,6 @@ export default function Personaldetail() {
                 </div>
                 <div className="flex px-[60px] mt-20  justify-between">
                   <button
-                    // type="submit"
                     className="flex justify-center rounded border border-transparent bg-transparent  py-3 px-[20px] text-[15px] flex items-center font-semibold text-violet600 focus:outline-none focus:ring-0 "
                     onClick={() => router.push("/brand/signup")}
                   >

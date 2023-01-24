@@ -110,10 +110,6 @@ const Dashboard = () => {
   const allTransaction = useSelector(
     (state) => state.Transaction.AllTransaction
   );
-  console.log(
-    "🚀 ~ file: index.js:113 ~ Dashboard ~ allTransaction",
-    allTransaction
-  );
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
 

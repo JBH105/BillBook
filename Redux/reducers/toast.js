@@ -7,7 +7,6 @@ const initialState = {
 };
 
 export const Toast = (state = initialState, action) => {
-    console.log(action.type, "payload")
     switch (action.type) {
         case "SHOW_TOAST":
             return {

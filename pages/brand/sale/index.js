@@ -14,25 +14,6 @@ import { resetToast, showToast } from "../../../Redux/action/toast";
 import SaleInvoice from "../../../components/Brand/SaleInvoice/saleInvoice";
 import { AllInvoice } from "../../../Redux/action/saleInvoice";
 
-const Currency = [
-  { id: 0, name: "Currency" },
-  { id: 1, name: "INR(Cash)" },
-  { id: 2, name: "INR(Bank)" },
-  { id: 3, name: "USD" },
-  { id: 4, name: "RMB/CNY" },
-  { id: 5, name: "Sale" },
-  { id: 6, name: "GST" },
-  { id: 7, name: "Cering" },
-  { id: 8, name: "Purchase" },
-];
-const Transaction = [
-  { id: 0, name: "Transaction Type" },
-  { id: 1, name: "Credit" },
-  { id: 2, name: "Debit" },
-];
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 export default function Index() {
   const dispatch = useDispatch();
   const [profileView, setProfileView] = useState(false);
@@ -42,7 +23,6 @@ export default function Index() {
   const [tool, setTool] = useState();
 
   const allInvoice = useSelector((state) => state.Invoice.allInvoice);
-  console.log("🚀 ~ file: index.js:45 ~ Index ~ allInvoice", allInvoice);
   const allStock = useSelector((state) => state.Product.allstock);
   const [page, setPage] = useState(1);
 
@@ -71,7 +51,8 @@ export default function Index() {
           id: "SampleToast",
           type: 200,
           handleClose: () => {
-            console.log("the toast is closed");
+            console.log(action.type, "payload")
+            ("the toast is closed");
           },
         })
       );

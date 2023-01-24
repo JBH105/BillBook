@@ -13,9 +13,6 @@ export const vender = (state = initialState, action) => {
     case "All_VENDER":
       return { ...state, vender: action.payload };
 
-    // case "DELETE_VENDER":
-    //   return { ...state, vender: action.payload };
-
     case "SET_LOADING":
       return { ...state, error: action.payload };
 

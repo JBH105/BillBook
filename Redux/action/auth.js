@@ -1,7 +1,5 @@
-// import EcommerceApis from "../../apis/EcommerceApis";
 
 import axios from "axios";
-import { Router, useRouter } from "next/router";
 import BASE_URL from "../../Api";
 import URL from "../../URL";
 
@@ -27,13 +25,11 @@ export const logIn = (data) => {
     try {
       const response = await axios.post(`${URL}/login`, data);
       sessionStorage.setItem("x-access-token", response.data.token);
-      console.log("🚀 ~ file: auth.js:30 ~ return ~ response", response);
       return dispatch({
         type: "LOGIN_USER",
         payload: response.data,
       });
     } catch (err) {
-      console.log("🚀 ~ file: auth.js:36 ~ return ~ err", err);
       return dispatch({
         type: "SET_LOADING",
         payload: err.response.data,

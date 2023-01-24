@@ -1,6 +1,4 @@
 import axios from "axios";
-import { Router, useRouter } from "next/router";
-import BASE_URL from "../../Api";
 import URL from "../../URL";
 
 export const AddInvoice = (data) => {

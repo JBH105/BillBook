@@ -11,10 +11,7 @@ export default function Signup() {
   const userSignupData = useSelector(
     (state) => state.getUserSignupData.userSignupData
   );
-  console.log(
-    "🚀 ~ file: signup.js:12 ~ Signup ~ userSignupData",
-    userSignupData
-  );
+
   const router = useRouter();
   const dispatch = useDispatch();
   const initialValues = {
@@ -34,7 +31,6 @@ export default function Signup() {
 
   const handleSubmit = async (values) => {
     await dispatch(createUserDetails(values));
-    // await dispatch(userSignUpDetails(values));
   };
   const [showPassword, setShowPassword] = useState(false);
   return (

@@ -54,7 +54,6 @@ export const userDetails = (state = initialState, action) => {
 export const allProduct = (state = initialState, action) => {
   switch (action.type) {
     case "ALL_PRODUCT":
-      // console.log(action.payload ,"action.payloadaction.payloadaction.payloadaction.payload")
 
       return { ...state, allProduct: action.payload };
     default:
@@ -66,7 +65,6 @@ export const allProduct = (state = initialState, action) => {
 export const addCategory = (state = initialState, action) => {
   switch (action.type) {
     case "ADD_CATEGORY":
-      // console.log(action.payload ,"action.payloadaction.payloadaction.payloadaction.payload")
 
       return { ...state, category: action.payload };
     default:
@@ -78,8 +76,6 @@ export const addCategory = (state = initialState, action) => {
 export const getMainCategory = (state = initialState, action) => {
   switch (action.type) {
     case "GET_CATEGORY":
-      // console.log(action.payload ,"action.payloadaction.payloadaction.payloadaction.payload")
-
       return { ...state, getCategory: action.payload };
     default:
       return state;

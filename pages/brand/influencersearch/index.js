@@ -18,7 +18,6 @@ import {
   StarIcon,
 } from "@heroicons/react/20/solid";
 import dynamic from "next/dynamic";
-// const ReactApexChart =dynamic()
 const ReactApexChart = dynamic(
   () => {
     return import("react-apexcharts");

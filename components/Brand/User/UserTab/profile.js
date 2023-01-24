@@ -60,7 +60,6 @@ const Profile = ({ ProfileData, setProfileView }) => {
           validationSchema={validationSchema}
           enableReinitialize={true}
           onSubmit={(values) => {
-            console.log(values, "valuesvaluesvalues");
             router.push("/brand/onboarding/companyinformation");
           }}
         >

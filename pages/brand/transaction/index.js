@@ -1,4 +1,4 @@
-import React, { Fragment, useState, Component, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { randomIntFromInterval } from "../../../util/randomNumber";
@@ -192,9 +192,6 @@ const InfluencerSearch = () => {
                     return (
                       <div>
                         <button
-                          // className="bg-violet600 rounded-[6px] flex items-center justify-center text-white ring-1 ring-purple100 w-[24.75px] h-[24.75px]  text-[13px] font-semibold leading-5"
-                          // bg-white text-violet600 hover:bg-violet600   hover:text-white ring-1
-
                           className={
                             item === allTransaction.current
                               ? "bg-violet600 rounded-[6px] flex items-center justify-center text-white ring-1 ring-purple100 w-[24.75px] h-[24.75px]  text-[13px] font-semibold leading-5"
@@ -212,35 +209,6 @@ const InfluencerSearch = () => {
                 </button>
               </div>
             </div>
-            {/* <div className="flex justify-end items-center pt-5">
-              <div className="flex items-center space-x-[19px]">
-                <button className="bg-[#CECDD066] flex items-center justify-center rounded-[6px] w-[28.38px] h-[28.38px]">
-                  <img src="/assets/icons/left-gray.svg" />
-                </button>
-                <button className="bg-violet600 rounded-[6px] flex items-center justify-center text-white ring-1 ring-purple100 w-[24.75px] h-[24.75px]  text-[13px] font-semibold leading-5">
-                  1
-                </button>
-                <button className="bg-white text-violet600 hover:bg-violet600 rounded-[6px] flex items-center justify-center hover:text-white ring-1 ring-purple100 w-[24.75px] h-[24.75px]  text-[13px] font-semibold leading-5">
-                  2
-                </button>
-                <button className="bg-white flex text-violet600 hover:bg-violet600 rounded-[6px] flex items-center relative justify-center hover:text-white ring-1 ring-purple100 w-[24.75px] h-[24.75px]  text-[13px] font-semibold leading-5">
-                  <span className="flex items-center absolute top-[7px] tracking-[1px]">
-                    ...
-                  </span>
-                  <img
-                    src="/assets/icons/select.svg"
-                    className="absolute bottom-0 right-0"
-                  />
-                </button>
-                <button className="bg-white text-violet600 hover:bg-violet600 rounded-[6px] flex items-center justify-center hover:text-white ring-1 ring-purple100 w-[24.75px] h-[24.75px]  text-[13px] font-semibold leading-5">
-                  6
-                </button>
-
-                <button className="bg-[#CECDD066] flex items-center justify-center rounded-[6px] w-[28.38px] h-[28.38px]">
-                  <img src="/assets/icons/right-gray.svg" />
-                </button>
-              </div>
-            </div> */}
           </div>
         </div>
       </main>

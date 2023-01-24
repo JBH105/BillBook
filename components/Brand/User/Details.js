@@ -1,17 +1,10 @@
-import React, { Fragment, useState, Component, useEffect } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import {
-  Disclosure,
   Dialog,
   Transition,
-  Listbox,
-  Menu,
+
 } from "@headlessui/react";
-import {
-  CheckIcon,
-  ChevronDownIcon,
-  StarIcon,
-} from "@heroicons/react/20/solid";
-import Slider from "react-slick";
+
 import RecentHistory from "./UserTab/RecentHistory";
 import RecentTransaction from "./UserTab/RecentTransaction";
 import { randomIntFromInterval } from "../../../util/randomNumber";

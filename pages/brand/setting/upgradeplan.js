@@ -152,7 +152,6 @@ const plan = [
 ];
 
 export default function UpgradePlan() {
-  const [compare, setCompare] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   return (
     <div className="bg-[#FAF9FD] w-full">

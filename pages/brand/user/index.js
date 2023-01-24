@@ -14,9 +14,6 @@ export default function Index({ userData }) {
   const [userDetail, setUserDetail] = useState({});
 
   const router = useRouter();
-  // useEffect(() => {
-  //   dispatch(AllVender());
-  // }, []);
 
   useEffect(() => {
     const { id } = router.query;
@@ -131,7 +128,6 @@ export default function Index({ userData }) {
                   </div>
                   <div className="flex space-x-5 items-center mt-2">
                     <h1 className="text-black500 font-bold text-[31px] leading-[46px] flex">
-                      {/* <img src="/assets/icons/n.svg" /> */}
                       {item?.fullName}
                     </h1>
                   </div>

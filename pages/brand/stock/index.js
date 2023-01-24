@@ -1,10 +1,7 @@
-import React, { Fragment, useState, Component, useEffect } from "react";
+import React, {  useState, useEffect } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { randomIntFromInterval } from "../../../util/randomNumber";
 import { useDispatch, useSelector } from "react-redux";
-import { AllTransaction } from "../../../Redux/action/transaction";
-import Details from "../../../components/Brand/User/Details";
 import AddStock from "../../../components/Brand/Stock/AddStock";
 import { AllProduct, DeleteProduct } from "../../../Redux/action/stock";
 import BASE_URL from "../../../URL";

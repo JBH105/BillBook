@@ -1,17 +1,7 @@
 import React, { useState } from "react";
-import { Fragment } from "react";
-import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import { IoFlash } from "react-icons/io5";
-import { SlEarphonesAlt } from "react-icons/sl";
-import { TbLogout } from "react-icons/tb";
 import Link from "next/link";
-import { useSelector } from "react-redux";
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const router = useRouter();
