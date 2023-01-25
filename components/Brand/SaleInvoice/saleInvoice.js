@@ -1,9 +1,5 @@
 import React, { Fragment, useState } from "react";
-import {
-  Dialog,
-  Transition,
-  Combobox,
-} from "@headlessui/react";
+import { Dialog, Transition, Combobox } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/20/solid";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -146,16 +142,18 @@ export default function SaleInvoice({
       setProfileView(false);
     } else {
       await dispatch(
-
         showToast({
-          message: response?.payload.data.message.parent.sqlMessage,
+          message:
+            response?.payload?.data?.message?.parent?.sqlMessage ||
+            response?.payload?.data?.message?.errors[0]?.message ||
+            response?.payload?.data?.message,
           time: 5000,
           id: "SampleToast",
           type: 400,
           handleClose: () => {
             console.log("the toast is closed");
           },
-        }) 
+        })
       );
       setTimeout(() => {
         dispatch(resetToast());

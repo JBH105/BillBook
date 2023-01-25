@@ -1,9 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import {
-  Dialog,
-  Transition,
-
-} from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 
 import RecentHistory from "./UserTab/RecentHistory";
 import RecentTransaction from "./UserTab/RecentTransaction";

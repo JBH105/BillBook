@@ -1,11 +1,12 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { logIn } from "../../Redux/action/auth";
 import { resetToast, showToast } from "../../Redux/action/toast";
+import axios from "axios";
 
 export default function Login() {
   const state = useSelector((state) => {
@@ -27,28 +28,36 @@ export default function Login() {
     const response = await dispatch(logIn(values));
     const token = sessionStorage.getItem("x-access-token");
     if (response?.payload.token) {
-      await dispatch(showToast({
-        message: "user login successful",
-        time: 5000,
-        id: "SampleToast",
-        type: 200,
-        handleClose: () => { console.log("the toast is closed") }
-      }))
+      await dispatch(
+        showToast({
+          message: "user login successful",
+          time: 5000,
+          id: "SampleToast",
+          type: 200,
+          handleClose: () => {
+            console.log("the toast is closed");
+          },
+        })
+      );
       router.push("/brand/dashboard");
       setTimeout(() => {
-        dispatch(resetToast())
-      }, 3000)
+        dispatch(resetToast());
+      }, 3000);
     } else {
-      await dispatch(showToast({
-        message: response?.payload.error,
-        time: 5000,
-        id: "SampleToast",
-        type: 400,
-        handleClose: () => { console.log("the toast is closed") }
-      }))
+      await dispatch(
+        showToast({
+          message: response?.payload.error,
+          time: 5000,
+          id: "SampleToast",
+          type: 400,
+          handleClose: () => {
+            console.log("the toast is closed");
+          },
+        })
+      );
       setTimeout(() => {
-        dispatch(resetToast())
-      }, 3000)
+        dispatch(resetToast());
+      }, 3000);
     }
   };
   return (
@@ -59,7 +68,6 @@ export default function Login() {
           src="/assets/login.svg"
           alt="Branding&Lifestyle"
         />
-
       </div>
       <div className="flex  flex-col justify-center items-center px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-[134px]">
         <div className="mx-auto w-full ">

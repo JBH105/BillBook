@@ -64,7 +64,7 @@ export default function AddStock({ profileView, setProfileView, userDetail }) {
       setProfileView(false)
     } else {
       await dispatch(showToast({
-        message: response?.payload.data.message,
+        message: response?.payload.data.message ,
         time: 5000,
         id: "SampleToast",
         type: 400,
@@ -74,8 +74,6 @@ export default function AddStock({ profileView, setProfileView, userDetail }) {
         dispatch(resetToast())
       }, 3000)
     }
-
-
   };
 
   return (
