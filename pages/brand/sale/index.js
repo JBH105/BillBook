@@ -13,6 +13,7 @@ import Tooltip from "../../../components/Tooltip/tooltip";
 import { resetToast, showToast } from "../../../Redux/action/toast";
 import SaleInvoice from "../../../components/Brand/SaleInvoice/saleInvoice";
 import { AllInvoice } from "../../../Redux/action/saleInvoice";
+import Invoice from "../../../components/Brand/SaleInvoice/Invoice";
 
 export default function Index() {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ export default function Index() {
   const [stockDetails, setStockDetails] = useState({});
   const [image, setImage] = useState();
   const [open, setOpen] = useState(false);
+  const [openInvoice, setOpenInvoice] = useState(true);
   const [tool, setTool] = useState();
 
   const allInvoice = useSelector((state) => state.Invoice.allInvoice);
@@ -68,6 +70,7 @@ export default function Index() {
         profileView={profileView}
         setProfileView={setProfileView}
       />
+      <Invoice open={openInvoice} setOpen={setOpenInvoice} />
       <Image open={open} setOpen={setOpen} image={image} />
       <div className="py-6">
         <div className="mt-6 bg-white shadow-dark20 pt-[18px] px-[30px] pb-[22px] rounded-[15px]">
@@ -149,6 +152,7 @@ export default function Index() {
                                     ? undefined
                                     : "bg-[#D9D9D9] bg-opacity-[0.2]"
                                 } influencertable`}
+                                onClick={() => setOpenInvoice(true)}
                               >
                                 <td className="whitespace-nowrap py-3 px-3 cursor-pointer text-sm ">
                                   <div className="flex space-x-[7px]">

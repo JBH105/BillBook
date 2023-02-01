@@ -145,7 +145,7 @@ export default function SaleInvoice({
         showToast({
           message:
             response?.payload?.data?.message?.parent?.sqlMessage ||
-            response?.payload?.data?.message?.errors[0]?.message ||
+            // response?.payload?.data?.message?.errors[0]?.message ||
             response?.payload?.data?.message,
           time: 5000,
           id: "SampleToast",
