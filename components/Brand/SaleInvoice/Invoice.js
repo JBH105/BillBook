@@ -402,8 +402,9 @@ export default function Invoice(props) {
                   </div>
                   <div className="static bottom-0 w-full left-0 right-0 duration-300 transition bg-white p-3 gap-2 flex justify-end">
                   <button className="bg-sky-500 text-white px-6 rounded-lg py-2 hover:bg-sky-600 duration-300 transition outline-none focus:outline-none">OPNE PDF</button>
-                        <button className="bg-sky-500 text-white px-6 rounded-lg hover:bg-sky-600 duration-300 py-2 outline-none  focus:outline-none">SAVE PDF</button>
+                        <button className="bg-sky-500 text-white px-6 rounded-lg hover:bg-green-600 duration-300 py-2 outline-none  focus:outline-none">SAVE PDF</button>
                         <button className="bg-sky-500 text-white px-6 rounded-lg hover:bg-sky-600 duration-300 py-2 outline-none focus:outline-none">PRINT</button>
+                        <button onClick={() => props.setOpen(false)} className="bg-sky-500 text-white px-6 rounded-lg hover:bg-red-600 duration-300 py-2 outline-none focus:outline-none">CANCEL</button>
                                       
                   </div>
                 </Dialog.Panel>
