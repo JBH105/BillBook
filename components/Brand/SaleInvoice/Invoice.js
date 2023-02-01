@@ -58,7 +58,9 @@ export default function Invoice(props) {
                 leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               >
-                <Dialog.Panel className="relative transform overflow-y-auto h-[93vh] custom-scroll rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-6xl sm:p-6">
+                <Dialog.Panel className="relative transform rounded-lg bg-white overflow-hidden  text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-6xl  px-0">
+                  <div className="overflow-y-auto px-6 h-[82vh] pt-8 custom-scroll">
+
                   <div className="flex border-b mb-3 pb-5">
                     <img
                       src={props?.image}
@@ -389,7 +391,7 @@ export default function Invoice(props) {
                       </div>
                     </div>
                   </div>
-                  <div className="min-h-[300px] pt-10 sm:px-20 flex justify-end">
+                  <div className="min-h-[200px] pt-10 sm:px-20 flex justify-end">
                     <div className="text-center">
 
                       <span className="block" >For : My Company</span>
@@ -397,10 +399,11 @@ export default function Invoice(props) {
                       <span className="block">Authoraized Signatory</span>
                     </div>
                   </div>
-                  <div className="absolute bottom-0">
-                  <button className="bg-sky-500 text-white px-6 rounded-lg py-2 outline-none focus:outline-none">OPNE PDF</button>
-                        <button className="bg-sky-500 text-white px-6 rounded-lg py-2 outline-none focus:outline-none">SAVE PDF</button>
-                        <button className="bg-sky-500 text-white px-6 rounded-lg py-2 outline-none focus:outline-none">PRINT</button>
+                  </div>
+                  <div className="static bottom-0 w-full left-0 right-0 duration-300 transition bg-white p-3 gap-2 flex justify-end">
+                  <button className="bg-sky-500 text-white px-6 rounded-lg py-2 hover:bg-sky-600 duration-300 transition outline-none focus:outline-none">OPNE PDF</button>
+                        <button className="bg-sky-500 text-white px-6 rounded-lg hover:bg-sky-600 duration-300 py-2 outline-none  focus:outline-none">SAVE PDF</button>
+                        <button className="bg-sky-500 text-white px-6 rounded-lg hover:bg-sky-600 duration-300 py-2 outline-none focus:outline-none">PRINT</button>
                                       
                   </div>
                 </Dialog.Panel>
