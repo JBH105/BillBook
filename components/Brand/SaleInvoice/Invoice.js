@@ -58,8 +58,8 @@ export default function Invoice(props) {
                 leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               >
-                <Dialog.Panel className="relative transform rounded-lg bg-white overflow-hidden  text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-6xl  px-0">
-                  <div className="overflow-y-auto px-6 h-[82vh] pt-8 custom-scroll">
+                <Dialog.Panel className="relative transform pt-8 rounded-lg bg-white overflow-hidden  text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-6xl  px-0">
+                  <div className="overflow-y-auto px-6 h-[82vh]  custom-scroll">
 
                   <div className="flex border-b mb-3 pb-5">
                     <img

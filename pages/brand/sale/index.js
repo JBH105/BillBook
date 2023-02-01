@@ -262,7 +262,7 @@ export default function Index() {
               </div>
             </>
           ) : (
-            <div className="flex h-[100vh] justify-center ">
+            <div className="flex h-[74vh] justify-center ">
               <img src="/assets/datanotfound.svg" />
             </div>
           )}
