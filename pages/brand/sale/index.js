@@ -21,8 +21,9 @@ export default function Index() {
   const [stockDetails, setStockDetails] = useState({});
   const [image, setImage] = useState();
   const [open, setOpen] = useState(false);
-  const [openInvoice, setOpenInvoice] = useState(true);
+  const [openInvoice, setOpenInvoice] = useState(false);
   const [tool, setTool] = useState();
+  const [saleData, setSaleData] = useState();
 
   const allInvoice = useSelector((state) => state.Invoice.allInvoice);
   const allStock = useSelector((state) => state.Product.allstock);
@@ -40,28 +41,29 @@ export default function Index() {
 
   useEffect(() => {
     handleTransaction();
+    dispatch(AllProduct(1));
   }, [page]);
 
-  const deleteProduct = async (id) => {
-    const response = await dispatch(DeleteProduct(id));
-    if (response?.payload.message) {
-      await dispatch(AllProduct(page));
-      await dispatch(
-        showToast({
-          message: response?.payload.message,
-          time: 5000,
-          id: "SampleToast",
-          type: 200,
-          handleClose: () => {
-            console.log(action.type, "payload")("the toast is closed");
-          },
-        })
-      );
-      setTimeout(() => {
-        dispatch(resetToast());
-      }, 3000);
-    }
-  };
+  // const deleteProduct = async (id) => {
+  //   const response = await dispatch(DeleteProduct(id));
+  //   if (response?.payload.message) {
+  //     await dispatch(AllProduct(page));
+  //     await dispatch(
+  //       showToast({
+  //         message: response?.payload.message,
+  //         time: 5000,
+  //         id: "SampleToast",
+  //         type: 200,
+  //         handleClose: () => {
+  //           console.log(action.type, "payload")("the toast is closed");
+  //         },
+  //       })
+  //     );
+  //     setTimeout(() => {
+  //       dispatch(resetToast());
+  //     }, 3000);
+  //   }
+  // };
 
   return (
     <main className="bg-main-bg px-4 sm:px-6 lg:px-[60px]">
@@ -70,14 +72,18 @@ export default function Index() {
         profileView={profileView}
         setProfileView={setProfileView}
       />
-      <Invoice open={openInvoice} setOpen={setOpenInvoice} />
+      <Invoice
+        open={openInvoice}
+        setOpen={setOpenInvoice}
+        saleData={saleData}
+      />
       <Image open={open} setOpen={setOpen} image={image} />
       <div className="py-6">
         <div className="mt-6 bg-white shadow-dark20 pt-[18px] px-[30px] pb-[22px] rounded-[15px]">
           <div className="md:flex justify-between">
             <div className="flex items-center">
               <h2 className="text-black500  font-semibold text-[17px] leading-[26px]">
-                Stock List
+                Stock List 123
               </h2>
             </div>
             <div>
@@ -152,7 +158,10 @@ export default function Index() {
                                     ? undefined
                                     : "bg-[#D9D9D9] bg-opacity-[0.2]"
                                 } influencertable`}
-                                onClick={() => setOpenInvoice(true)}
+                                onClick={() => {
+                                  setOpenInvoice(true);
+                                  setSaleData(person);
+                                }}
                               >
                                 <td className="whitespace-nowrap py-3 px-3 cursor-pointer text-sm ">
                                   <div className="flex space-x-[7px]">
@@ -186,43 +195,7 @@ export default function Index() {
                                     {person.total_Quantity}
                                   </span>
                                 </td>
-                                <td className="whitespace-nowrap text-sm text-gray-500">
-                                  <Tooltip content={tool} direction="left-px">
-                                    <div className="flex justify-center text-center gap-[12px]">
-                                      <img
-                                        onClick={() => {
-                                          setProfileView(true);
-                                          setStockDetails(person);
-                                        }}
-                                        onMouseOver={(e) =>
-                                          setTool(e.target.name)
-                                        }
-                                        name="Edit stock"
-                                        src="/assets/icons/edit-2.svg"
-                                        className="w-[12%] hover:bg-blue-100 hover:rounded-md"
-                                      />
-                                      <img
-                                        onMouseOver={(e) =>
-                                          setTool(e.target.name)
-                                        }
-                                        name="Outof stock"
-                                        src="/assets/icons/view-off.svg"
-                                        className="w-[12%]"
-                                      />
-                                      <img
-                                        onClick={() =>
-                                          deleteProduct(person?.id)
-                                        }
-                                        onMouseOver={(e) =>
-                                          setTool(e.target.name)
-                                        }
-                                        name="Delete stock"
-                                        src="/assets/icons/trash.svg"
-                                        className="w-[12%]"
-                                      />
-                                    </div>
-                                  </Tooltip>
-                                </td>
+                                <td className="whitespace-nowrap text-sm text-gray-500"></td>
                                 <td></td>
                               </tr>
                             ))}

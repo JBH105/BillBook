@@ -28,11 +28,11 @@ export default function SaleInvoice({
 }) {
   const dispatch = useDispatch();
   const Product = useSelector((state) => state.Product.allstock);
+  console.log("🚀 ~ file: saleInvoice.js:31 ~ Product:", Product)
   const [date, setDate] = useState(new Date());
   const [saleData, setSaleData] = useState({});
   const [data, setData] = useState([{ productId: "", qty: "" }]);
   const [total, setTotal] = useState({});
-
   const [query, setQuery] = useState("");
   const [selectedPerson, setSelectedPerson] = useState(null);
 
