@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import productReducers, { getUserSignupData, logIn, userDetails } from "./auth";
-import { Invoice } from "./saleInvoice";
+import { Invoice, PDFInvoice } from "./saleInvoice";
 import { Stock } from "./stock";
 import { Toast } from "./toast";
 import { transaction } from "./transaction";
@@ -16,6 +16,7 @@ const reducer = combineReducers({
   Product: Stock,
   Toast: Toast,
   Invoice: Invoice,
+  PDFInvoice: PDFInvoice,
 });
 
 export default reducer;

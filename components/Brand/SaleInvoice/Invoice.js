@@ -1,6 +1,10 @@
-import React, { Fragment, useEffect, useMemo } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { BiRupee } from "react-icons/bi";
+import converter from "number-to-words";
+import { SetInvoiceData } from "../../../Redux/action/saleInvoice";
+import { useDispatch, useSelector } from "react-redux";
+
 const people = [
   {
     id: 1,
@@ -31,11 +35,27 @@ const text = [
   },
 ];
 export default function Invoice(props) {
+  const dispatch = useDispatch();
+  const invoice = useSelector((state) => state.PDFInvoice.pdfInvoice);
+  const [total, setTotal] = useState({
+    QuntitySum: "",
+    PriceSum: "",
+    DiscountSum: "",
+    GSTSum: "",
+    AmountSum: "",
+  });
+
   useMemo(() => {
+    let QuntitySum = 0.0;
+    let PriceSum = 0.0;
+    let DiscountSum = 0.0;
+    let GSTSum = 0.0;
+    let AmountSum = 0.0;
+    if (props?.saleData?.saleProducts.length <= 0) {
+      setTotal({});
+    }
     props?.saleData?.saleProducts.map((item, index) => {
-      console.log(item, "item");
-      let sumqty = 0;
-      let sumprice = 0;
+      item.QuntitySum = QuntitySum;
       let sum = item.priceWithTax * item.qty;
       item.TotalSum = item.priceWithTax * item.qty;
       if (item?.discountWithAmount) {
@@ -57,9 +77,32 @@ export default function Invoice(props) {
       } else {
         item.TotalAmount = item.TotalSum;
       }
+      QuntitySum = item.qty ? QuntitySum + item.qty : QuntitySum;
+      PriceSum = item.priceWithTax ? PriceSum + item.priceWithTax : PriceSum;
+      DiscountSum = item.TotalDiscount
+        ? DiscountSum + item.TotalDiscount
+        : DiscountSum;
+      GSTSum = item.TotalTax ? GSTSum + item.TotalTax : GSTSum;
+      AmountSum = item.TotalAmount ? AmountSum + item.TotalAmount : AmountSum;
+      setTotal({
+        QuntitySum: QuntitySum,
+        PriceSum: PriceSum,
+        DiscountSum: DiscountSum,
+        GSTSum: GSTSum,
+        AmountSum: AmountSum,
+      });
     });
+    dispatch(
+      SetInvoiceData({
+        ...props.saleData,
+        QuntitySum,
+        PriceSum,
+        DiscountSum,
+        GSTSum,
+        AmountSum,
+      })
+    );
   }, [props]);
-
   return (
     <div>
       <Transition.Root show={props.open} as={Fragment}>
@@ -218,7 +261,7 @@ export default function Invoice(props) {
                                         ) : sale.discountWithPercentage ? (
                                           <>%{sale.discountWithPercentage}</>
                                         ) : (
-                                          "-"
+                                          "0.00"
                                         )}
                                       </td>
                                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
@@ -230,7 +273,7 @@ export default function Invoice(props) {
                                         ) : sale.taxWithPercentage ? (
                                           <>%{sale.taxWithPercentage}</>
                                         ) : (
-                                          "-"
+                                          "0.00"
                                         )}
                                       </td>
                                       <td className="whitespace-nowrap px-3 py-4 text-right text-sm text-gray-500">
@@ -249,21 +292,24 @@ export default function Invoice(props) {
                                   </td>
                                   <td className="whitespace-nowrap px-3 font-semibold py-4 text-left text-sm text-gray-900"></td>
                                   <td className="whitespace-nowrap px-3 font-semibold py-4 text-left text-sm text-gray-900">
-                                    100
+                                    {total.QuntitySum}
                                   </td>
-                                  <td className="whitespace-nowrap px-3 font-semibold py-4 text-left text-sm text-gray-900"></td>
                                   <td className="whitespace-nowrap px-3 font-semibold py-4 text-left text-sm text-gray-900"></td>
                                   <td className="whitespace-nowrap px-3 font-semibold py-4 text-left text-sm text-gray-900">
                                     <BiRupee className="inline-block " />
-                                    2333.00
+                                    {total.PriceSum}
                                   </td>
                                   <td className="whitespace-nowrap px-3 font-semibold py-4 text-left text-sm text-gray-900">
                                     <BiRupee className="inline-block " />
-                                    2333.00
+                                    {total.DiscountSum}
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 font-semibold py-4 text-left text-sm text-gray-900">
+                                    <BiRupee className="inline-block " />
+                                    {total.GSTSum}
                                   </td>
                                   <td className="whitespace-nowrap px-3 font-semibold py-4 text-right text-sm text-gray-900">
                                     <BiRupee className="inline-block " />
-                                    2333333.00
+                                    {total.AmountSum}
                                   </td>
                                 </tr>
                               </tfoot>
@@ -350,7 +396,10 @@ export default function Invoice(props) {
                                       <tbody className="divide-y divide-gray-200 bg-white">
                                         <tr>
                                           <td className="whitespace-nowrap px-3 py-3.5 text-sm font-medium text-gray-900 ">
-                                            Six
+                                            {total?.AmountSum &&
+                                              converter.toWords(
+                                                total?.AmountSum
+                                              )}
                                           </td>
                                         </tr>
                                       </tbody>
@@ -411,7 +460,7 @@ export default function Invoice(props) {
                                         </td>
                                         <td className=" whitespace-nowrap px-3 py-3.5 text-sm text-right font-medium text-gray-900 ">
                                           <BiRupee className="inline-block " />
-                                          30,000
+                                          {total.AmountSum}
                                         </td>
                                       </tr>
                                       <tr>
@@ -420,7 +469,7 @@ export default function Invoice(props) {
                                         </td>
                                         <td className=" whitespace-nowrap px-3 py-3.5 text-right text-md font-semibold text-gray-900 ">
                                           <BiRupee className="inline-block text-xl" />
-                                          30,000
+                                          {total.AmountSum}
                                         </td>
                                       </tr>
                                       <tr className="border-b border-gray-200">
@@ -429,7 +478,7 @@ export default function Invoice(props) {
                                         </td>
                                         <td className=" whitespace-nowrap px-3 py-3.5 text-sm text-right font-medium text-gray-900 ">
                                           <BiRupee className="inline-block " />
-                                          30,000
+                                          {total.AmountSum}
                                         </td>
                                       </tr>
                                       <tr>
@@ -438,7 +487,7 @@ export default function Invoice(props) {
                                         </td>
                                         <td className=" whitespace-nowrap px-3 py-3.5 text-sm text-right font-medium text-violet600 ">
                                           <BiRupee className="inline-block " />
-                                          30,000
+                                          {total.DiscountSum}
                                         </td>
                                       </tr>
                                       <tr></tr>

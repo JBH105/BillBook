@@ -3,6 +3,7 @@ const initialState = {
   error: [],
   allstock: [],
   allInvoice: [],
+  pdfInvoice: {},
 };
 
 export const Invoice = (state = initialState, action) => {
@@ -19,6 +20,18 @@ export const Invoice = (state = initialState, action) => {
       };
     case "SET_LOADING":
       return { ...state, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const PDFInvoice = (state = initialState, action) => {
+  switch (action.type) {
+    case "SET_INVOICE_DATA":
+      return {
+        ...state,
+        pdfInvoice: action.payload,
+      };
     default:
       return state;
   }

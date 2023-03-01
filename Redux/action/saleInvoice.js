@@ -42,3 +42,13 @@ export const AllInvoice = (data) => {
     }
   };
 };
+
+export const SetInvoiceData = (data) => {
+  return async (dispatch) => {
+      return dispatch({
+          type: "SET_INVOICE_DATA",
+          payload: data,
+
+      });
+  }
+}
