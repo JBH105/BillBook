@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
-import { Dialog, Transition, Combobox } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/20/solid";
+import { Dialog, Transition, Combobox, Listbox } from "@headlessui/react";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
 import { useDispatch, useSelector } from "react-redux";
 import { resetToast, showToast } from "../../../Redux/action/toast";
@@ -17,6 +17,18 @@ const tab = [
     name: "Profile",
   },
 ];
+const people = [
+  { id: 1, name: "Wade Cooper" },
+  { id: 2, name: "Arlene Mccoy" },
+  { id: 3, name: "Devon Webb" },
+  { id: 4, name: "Tom Cook" },
+  { id: 5, name: "Tanya Fox" },
+  { id: 6, name: "Hellen Schmidt" },
+  { id: 7, name: "Caroline Schultz" },
+  { id: 8, name: "Mason Heaney" },
+  { id: 9, name: "Claudie Smitham" },
+  { id: 10, name: "Emil Schaefer" },
+];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -28,13 +40,14 @@ export default function SaleInvoice({
 }) {
   const dispatch = useDispatch();
   const Product = useSelector((state) => state.Product.allstock);
-  console.log("🚀 ~ file: saleInvoice.js:31 ~ Product:", Product)
+  console.log("🚀 ~ file: saleInvoice.js:31 ~ Product:", Product);
   const [date, setDate] = useState(new Date());
   const [saleData, setSaleData] = useState({});
   const [data, setData] = useState([{ productId: "", qty: "" }]);
   const [total, setTotal] = useState({});
   const [query, setQuery] = useState("");
   const [selectedPerson, setSelectedPerson] = useState(null);
+  console.log("🚀 ~ file: saleInvoice.js:50 ~ selectedPerson:", selectedPerson);
 
   const filteredPeople =
     query === ""
@@ -160,6 +173,7 @@ export default function SaleInvoice({
       }, 3000);
     }
   };
+  const [selected, setSelected] = useState(people[3]);
 
   return (
     <div>
@@ -207,413 +221,547 @@ export default function SaleInvoice({
                         className="-mb-px flex gap-[20px] sm:gap-[30px] lg:gap-[68px] "
                         aria-label="Tabs"
                       >
-                        <div className=" w-full ">
-                          <div className=" mt-10 lg:mt-0 flex-auto mr-[25px] ml-[25px] sm:mr-[50px] sm:ml-[50px] lg:ml-[75px] py-10">
-                            <div>
-                              <div className="flex justify-between mb-9">
-                                <div className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
-                                  <div className="">
-                                    <label className="block md:mb-1 text-[13px] font-medium leading-5 text-gray700">
-                                      Billing Name
-                                    </label>
-                                    <input
-                                      id="id"
-                                      name="user_Name"
-                                      type="text"
-                                      placeholder="DL-12"
-                                      className="md:max-w-[350px] inputbg focus:bg-white/[0.25] focus:bg-white/[0.25] w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
-                                      onChange={(e) => HandleSaleData(e)}
-                                    />
+                        <form onSubmit={HandleInvoice}>
+                          <div className=" w-full ">
+                            <div className=" mt-10 lg:mt-0 flex-auto mr-[25px] ml-[25px] sm:mr-[50px] sm:ml-[50px] lg:ml-[75px] py-10">
+                              <div>
+                                <div className="flex justify-between mb-9">
+                                  <div className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
+                                    <div className="">
+                                      <label className="block md:mb-1 text-[13px] font-medium leading-5 text-gray700">
+                                        Billing Name
+                                      </label>
+                                      <input
+                                        id="id"
+                                        name="user_Name"
+                                        type="text"
+                                        placeholder="DL-12"
+                                        required
+                                        className="md:max-w-[350px] inputbg focus:bg-white/[0.25] focus:bg-white/[0.25] w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
+                                        onChange={(e) => HandleSaleData(e)}
+                                      />
+                                    </div>
+                                    <div className="">
+                                      <label className="block md:mb-1 text-[13px] font-medium leading-5 text-gray700">
+                                        Phone No.
+                                      </label>
+                                      <input
+                                        id="id"
+                                        name="phoneNo"
+                                        type="number"
+                                        placeholder="0123456789"
+                                        required
+                                        min={10}
+                                        // max={10}
+                                        className="md:max-w-[350px] inputbg focus:bg-white/[0.25] focus:bg-white/[0.25] w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
+                                        onChange={(e) => HandleSaleData(e)}
+                                      />
+                                    </div>
                                   </div>
                                   <div className="">
-                                    <label className="block md:mb-1 text-[13px] font-medium leading-5 text-gray700">
-                                      Phone No.
-                                    </label>
-                                    <input
-                                      id="id"
-                                      name="phoneNo"
-                                      type="number"
-                                      placeholder="0123456789"
-                                      className="md:max-w-[350px] inputbg focus:bg-white/[0.25] focus:bg-white/[0.25] w-full placeholder:italic placeholder:text-black600/[0.3] placeholder:leading-[22px] placeholder:font-normal placeholder:text-xs  md:placeholder:text-[15px] focus:outline-none text-[15px] font-medium leading-[22px] text-black600 border border-gray250 focus:border-[#2E1368] rounded-lg py-3 bg-white bg-opacity-[0.25] px-4"
-                                      onChange={(e) => HandleSaleData(e)}
-                                    />
+                                    <div className="flex gap-[33px] mb-4">
+                                      <label className="block whitespace-nowrap md:mb-1 text-[13px] font-medium leading-5 text-gray700">
+                                        Invoice No.
+                                      </label>
+                                      <p className=" w-full max-w-[80px] min-w-[70px] text-center text-[13px] font-medium leading-5 text-gray700">
+                                        123
+                                      </p>
+                                    </div>
+                                    <div className="flex gap-[33px] mb-4">
+                                      <label className="block whitespace-nowrap md:mb-1 text-[13px] font-medium leading-5 text-gray700">
+                                        Invoice Date
+                                      </label>
+                                      <input
+                                        type="date"
+                                        name="invoive_Date"
+                                        className=" w-full min-w-[70px] text-center text-[13px] font-medium leading-5 text-gray700"
+                                        defaultValue={date}
+                                        onChange={(e) => HandleSaleData(e)}
+                                      />
+                                    </div>
+                                    <div className="flex gap-[33px]">
+                                      <label className="block whitespace-nowrap md:mb-1 text-[13px] font-medium leading-5 text-gray700">
+                                        State of supply
+                                      </label>
+                                      <select
+                                        name="stateOfSupply"
+                                        className=" w-full border-b-2 min-w-[70px] text-center text-[13px] font-medium leading-5 text-gray700"
+                                        onChange={(e) => HandleSaleData(e)}
+                                      >
+                                        <option value="Select state">
+                                          Select state
+                                        </option>
+                                        <option value="One">One</option>
+                                        <option value="Two">Two</option>
+                                      </select>
+                                    </div>
                                   </div>
                                 </div>
-                                <div className="">
-                                  <div className="flex gap-[33px] mb-4">
-                                    <label className="block whitespace-nowrap md:mb-1 text-[13px] font-medium leading-5 text-gray700">
-                                      Invoice No.
-                                    </label>
-                                    <p className=" w-full max-w-[80px] min-w-[70px] text-center text-[13px] font-medium leading-5 text-gray700">
-                                      123
-                                    </p>
-                                  </div>
-                                  <div className="flex gap-[33px] mb-4">
-                                    <label className="block whitespace-nowrap md:mb-1 text-[13px] font-medium leading-5 text-gray700">
-                                      Invoice Date
-                                    </label>
-                                    <input
-                                      type="date"
-                                      name="invoive_Date"
-                                      className=" w-full min-w-[70px] text-center text-[13px] font-medium leading-5 text-gray700"
-                                      defaultValue={date}
-                                      onChange={(e) => HandleSaleData(e)}
-                                    />
-                                  </div>
-                                  <div className="flex gap-[33px]">
-                                    <label className="block whitespace-nowrap md:mb-1 text-[13px] font-medium leading-5 text-gray700">
-                                      State of supply
-                                    </label>
-                                    <select
-                                      name="stateOfSupply"
-                                      className=" w-full border-b-2 min-w-[70px] text-center text-[13px] font-medium leading-5 text-gray700"
-                                      onChange={(e) => HandleSaleData(e)}
-                                    >
-                                      <option value="Select state">
-                                        Select state
-                                      </option>
-                                      <option value="One">One</option>
-                                      <option value="Two">Two</option>
-                                    </select>
-                                  </div>
-                                </div>
-                              </div>
 
-                              <div className="flex flex-col">
-                                <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                  <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                                    <div className="overflow-hidden pb-[80px]">
-                                      <table className="min-w-full border text-center">
-                                        <thead className="border-b">
-                                          <tr className="border-b">
-                                            <th
-                                              scope="col"
-                                              rowspan="2"
-                                              className="text-sm font-medium text-gray-900 py-4 border-r"
-                                            >
-                                              #
-                                            </th>
-                                            <th
-                                              colspan="2"
-                                              scope="col"
-                                              rowspan="2"
-                                              className="text-sm font-medium min-w-[250px] max-w-[251px] text-gray-900 px-6 py-4 border-r"
-                                            >
-                                              ITEM
-                                            </th>
-                                            <th
-                                              scope="col"
-                                              rowspan="2"
-                                              className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
-                                            >
-                                              QTY
-                                            </th>
-                                            <th
-                                              scope="col"
-                                              rowspan="2"
-                                              className="text-sm font-medium text-gray-900 px-6"
-                                            >
-                                              PRICE/UNIT
-                                            </th>
+                                <div className="flex flex-col">
+                                  <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                    <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                                      <div className="overflow-hidden pb-[80px]">
+                                        <table className="min-w-full border text-center">
+                                          <thead className="border-b">
+                                            <tr className="border-b">
+                                              <th
+                                                scope="col"
+                                                rowspan="2"
+                                                className="text-sm font-medium text-gray-900 py-4 border-r"
+                                              >
+                                                #
+                                              </th>
+                                              <th
+                                                colspan="2"
+                                                scope="col"
+                                                rowspan="2"
+                                                className="text-sm font-medium min-w-[250px] max-w-[251px] text-gray-900 px-6 py-4 border-r"
+                                              >
+                                                ITEM
+                                              </th>
+                                              <th
+                                                scope="col"
+                                                rowspan="2"
+                                                className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
+                                              >
+                                                QTY
+                                              </th>
+                                              <th
+                                                scope="col"
+                                                rowspan="2"
+                                                className="text-sm font-medium text-gray-900 px-6"
+                                              >
+                                                PRICE/UNIT
+                                              </th>
 
-                                            <th
-                                              scope="col"
-                                              colspan="2"
-                                              className="text-sm font-medium text-gray-900 px-6 border-l border-r"
-                                            >
-                                              DISCOUNT
-                                            </th>
+                                              <th
+                                                scope="col"
+                                                colspan="2"
+                                                className="text-sm font-medium text-gray-900 px-6 border-l border-r"
+                                              >
+                                                DISCOUNT
+                                              </th>
 
-                                            <th
-                                              scope="col"
-                                              colspan="2"
-                                              className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
-                                            >
-                                              TAX
-                                            </th>
+                                              <th
+                                                scope="col"
+                                                colspan="2"
+                                                className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
+                                              >
+                                                TAX
+                                              </th>
 
-                                            <th
-                                              scope="col"
-                                              rowspan="2"
-                                              className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
-                                            >
-                                              <div className="flex justify-between w-full">
-                                                <span>AMOUNT</span>
-                                                <img
-                                                  src="/assets/icons8.png"
-                                                  onClick={Handle}
-                                                />
-                                              </div>
-                                            </th>
-                                          </tr>
-                                          <tr>
-                                            <th
-                                              scope="col"
-                                              className="text-sm font-medium text-gray-900 px-6  border-l border-r"
-                                            >
-                                              <span className="">%</span>
-                                            </th>
-                                            <th
-                                              scope="col"
-                                              className="text-sm font-medium text-gray-900 px-6  border-l border-r"
-                                            >
-                                              <span className="">AMOUNT</span>
-                                            </th>
-                                            <th
-                                              scope="col"
-                                              className="text-sm font-medium text-gray-900 px-6  border-l border-r"
-                                            >
-                                              <span className="">%</span>
-                                            </th>
-                                            <th
-                                              scope="col"
-                                              className="text-sm font-medium text-gray-900 px-6  border-l border-r"
-                                            >
-                                              <span className="">AMOUNT</span>
-                                            </th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {data &&
-                                            data.map((item, i) => {
-                                              return (
-                                                <tr className="border-b">
-                                                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r">
-                                                    {i}
-                                                  </td>
-                                                  <td
-                                                    colspan="2"
-                                                    className="border-r"
-                                                  >
-                                                    <Combobox
-                                                      className="h-full  "
-                                                      as="div"
-                                                      value={item.product_ID}
-                                                      onChange={
-                                                        setSelectedPerson
-                                                      }
+                                              <th
+                                                scope="col"
+                                                rowspan="2"
+                                                className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
+                                              >
+                                                <div className="flex justify-between w-full">
+                                                  <span>AMOUNT</span>
+                                                  <img
+                                                    src="/assets/icons8.png"
+                                                    onClick={Handle}
+                                                  />
+                                                </div>
+                                              </th>
+                                            </tr>
+                                            <tr>
+                                              <th
+                                                scope="col"
+                                                className="text-sm font-medium text-gray-900 px-6  border-l border-r"
+                                              >
+                                                <span className="">%</span>
+                                              </th>
+                                              <th
+                                                scope="col"
+                                                className="text-sm font-medium text-gray-900 px-6  border-l border-r"
+                                              >
+                                                <span className="">AMOUNT</span>
+                                              </th>
+                                              <th
+                                                scope="col"
+                                                className="text-sm font-medium text-gray-900 px-6  border-l border-r"
+                                              >
+                                                <span className="">%</span>
+                                              </th>
+                                              <th
+                                                scope="col"
+                                                className="text-sm font-medium text-gray-900 px-6  border-l border-r"
+                                              >
+                                                <span className="">AMOUNT</span>
+                                              </th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            {data &&
+                                              data.map((item, i) => {
+                                                return (
+                                                  <tr className="border-b">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r">
+                                                      {i}
+                                                    </td>
+                                                    <td
+                                                      colspan="2"
+                                                      className="border-r"
                                                     >
-                                                      <Combobox.Label className="block text-sm font-medium text-gray-700"></Combobox.Label>
-                                                      <div className="relative h-full">
-                                                        <Combobox.Input
-                                                          className="w-full h-full px-6 py-4 sm:text-sm"
-                                                          name="productId"
-                                                          onChange={(event) => {
-                                                            setQuery(
-                                                              event.target.value
-                                                            );
-                                                            handleChange(
-                                                              i,
+                                                      <Combobox
+                                                        className="h-full  "
+                                                        as="div"
+                                                        value={item.product_ID}
+                                                        required
+                                                        onChange={
+                                                          setSelectedPerson
+                                                        }
+                                                      >
+                                                        <Combobox.Label className="block text-sm font-medium text-gray-700"></Combobox.Label>
+                                                        <div className="relative h-full">
+                                                          <Combobox.Input
+                                                            className="w-full h-full px-6 py-4 sm:text-sm"
+                                                            name="productId"
+                                                            onChange={(
                                                               event
-                                                            );
-                                                          }}
-                                                          displayValue={(
-                                                            person
-                                                          ) =>
-                                                            person?.product_ID
-                                                          }
-                                                        />
-                                                        {filteredPeople?.length >
-                                                          0 && (
-                                                          <Combobox.Options className="absolute z-[99999] custom-scroll max-h-[118px] mt-1 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                                            {filteredPeople.map(
-                                                              (person) => (
-                                                                <Combobox.Option
-                                                                  key={
-                                                                    person.id
-                                                                  }
-                                                                  value={person}
-                                                                  className={({
-                                                                    active,
-                                                                  }) =>
-                                                                    classNames(
-                                                                      "relative cursor-default select-none py-2 pl-9 pr-3",
-                                                                      active
-                                                                        ? "bg-indigo-600 text-white"
-                                                                        : "text-gray-900"
-                                                                    )
-                                                                  }
-                                                                >
-                                                                  {({
-                                                                    active,
-                                                                    selected,
-                                                                  }) => (
-                                                                    <>
-                                                                      {selected && (
+                                                            ) => {
+                                                              setQuery(
+                                                                event.target
+                                                                  .value
+                                                              );
+                                                              handleChange(
+                                                                i,
+                                                                event
+                                                              );
+                                                            }}
+                                                            displayValue={(
+                                                              person
+                                                            ) =>
+                                                              person?.product_ID
+                                                            }
+                                                          />
+                                                          {filteredPeople?.length >
+                                                            0 && (
+                                                            <Combobox.Options className="absolute z-[99999] custom-scroll max-h-[118px] mt-1 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                                              {filteredPeople.map(
+                                                                (person) => (
+                                                                  <Combobox.Option
+                                                                    key={
+                                                                      person.id
+                                                                    }
+                                                                    value={
+                                                                      person
+                                                                    }
+                                                                    className={({
+                                                                      active,
+                                                                    }) =>
+                                                                      classNames(
+                                                                        "relative cursor-default select-none py-2 pl-9 pr-3",
+                                                                        active
+                                                                          ? "bg-indigo-600 text-white"
+                                                                          : "text-gray-900"
+                                                                      )
+                                                                    }
+                                                                  >
+                                                                    {({
+                                                                      active,
+                                                                      selected,
+                                                                    }) => (
+                                                                      <>
+                                                                        {selected && (
+                                                                          <span
+                                                                            className={classNames(
+                                                                              "absolute inset-y-0 left-[10px] flex items-center pr-4",
+                                                                              active
+                                                                                ? "text-white"
+                                                                                : "text-indigo-600"
+                                                                            )}
+                                                                          >
+                                                                            <CheckIcon
+                                                                              className="h-5 w-5"
+                                                                              aria-hidden="true"
+                                                                            />
+                                                                          </span>
+                                                                        )}
                                                                         <span
                                                                           className={classNames(
-                                                                            "absolute inset-y-0 left-[10px] flex items-center pr-4",
-                                                                            active
-                                                                              ? "text-white"
-                                                                              : "text-indigo-600"
+                                                                            "block truncate text-left",
+                                                                            selected &&
+                                                                              "font-semibold"
                                                                           )}
                                                                         >
-                                                                          <CheckIcon
-                                                                            className="h-5 w-5"
-                                                                            aria-hidden="true"
-                                                                          />
+                                                                          {
+                                                                            person.product_ID
+                                                                          }
                                                                         </span>
-                                                                      )}
-                                                                      <span
-                                                                        className={classNames(
-                                                                          "block truncate text-left",
-                                                                          selected &&
-                                                                            "font-semibold"
-                                                                        )}
-                                                                      >
-                                                                        {
-                                                                          person.product_ID
+                                                                      </>
+                                                                    )}
+                                                                  </Combobox.Option>
+                                                                )
+                                                              )}
+                                                            </Combobox.Options>
+                                                          )}
+                                                        </div>
+                                                      </Combobox>
+                                                    </td>
+
+                                                    {/* <td
+                                                      colspan="2"
+                                                      className="border-r"
+                                                    >
+                                                      <Listbox
+                                                        className="h-full  "
+                                                        as="div"
+                                                        value={item.product_ID}
+                                                        required
+                                                        onChange={
+                                                          setSelectedPerson
+                                                        }
+                                                      >
+                                                        {({ open }) => (
+                                                          <>
+                                                            <div className="relative mt-2">
+                                                              <Listbox.Button
+                                                                className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                                name="productId"
+                                                                onChange={(
+                                                                  event
+                                                                ) => {
+                                                                  setQuery(
+                                                                    event.target
+                                                                      .value
+                                                                  );
+                                                                  handleChange(
+                                                                    i,
+                                                                    event
+                                                                  );
+                                                                }}
+                                                                displayValue={(
+                                                                  person
+                                                                ) =>
+                                                                  person?.product_ID
+                                                                }
+                                                              >
+                                                                <span className="block truncate">
+                                                                  {
+                                                                    selectedPerson?.product_ID
+                                                                  }
+                                                                </span>
+                                                              </Listbox.Button>
+
+                                                              <Transition
+                                                                show={open}
+                                                                as={Fragment}
+                                                                leave="transition ease-in duration-100"
+                                                                leaveFrom="opacity-100"
+                                                                leaveTo="opacity-0"
+                                                              >
+                                                                <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                                                  {filteredPeople.map(
+                                                                    (
+                                                                      person
+                                                                    ) => (
+                                                                      <Listbox.Option
+                                                                        key={
+                                                                          person.id
                                                                         }
-                                                                      </span>
-                                                                    </>
+                                                                        className={({
+                                                                          active,
+                                                                        }) =>
+                                                                          classNames(
+                                                                            active
+                                                                              ? "bg-indigo-600 text-white"
+                                                                              : "text-gray-900",
+                                                                            "relative cursor-default select-none py-2 pl-3 pr-9"
+                                                                          )
+                                                                        }
+                                                                        value={
+                                                                          person
+                                                                        }
+                                                                      >
+                                                                        {({
+                                                                          selected,
+                                                                          active,
+                                                                        }) => (
+                                                                          <>
+                                                                            <span
+                                                                              className={classNames(
+                                                                                selected
+                                                                                  ? "font-semibold"
+                                                                                  : "font-normal",
+                                                                                "block truncate"
+                                                                              )}
+                                                                            >
+                                                                              {
+                                                                                person.product_ID
+                                                                              }
+                                                                            </span>
+
+                                                                            {selected ? (
+                                                                              <span
+                                                                                className={classNames(
+                                                                                  active
+                                                                                    ? "text-white"
+                                                                                    : "text-indigo-600",
+                                                                                  "absolute inset-y-0 right-0 flex items-center pr-4"
+                                                                                )}
+                                                                              >
+                                                                                <CheckIcon
+                                                                                  className="h-5 w-5"
+                                                                                  aria-hidden="true"
+                                                                                />
+                                                                              </span>
+                                                                            ) : null}
+                                                                          </>
+                                                                        )}
+                                                                      </Listbox.Option>
+                                                                    )
                                                                   )}
-                                                                </Combobox.Option>
-                                                              )
-                                                            )}
-                                                          </Combobox.Options>
+                                                                </Listbox.Options>
+                                                              </Transition>
+                                                            </div>
+                                                          </>
                                                         )}
-                                                      </div>
-                                                    </Combobox>
-                                                  </td>
-                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
-                                                    <input
-                                                      type="number"
-                                                      name="qty"
-                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
-                                                      onChange={(e) =>
-                                                        handleChange(i, e)
-                                                      }
-                                                    />
-                                                  </td>
-                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
-                                                    <input
-                                                      type="number"
-                                                      name="priceWithTax"
-                                                      onChange={(e) =>
-                                                        handleChange(i, e)
-                                                      }
-                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
-                                                    />
-                                                  </td>
-                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
-                                                    <input
-                                                      name="discountWithPercentage"
-                                                      type="number"
-                                                      disabled={Boolean(
-                                                        item.discountWithAmount
-                                                      )}
-                                                      onChange={(e) =>
-                                                        handleChange(i, e)
-                                                      }
-                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
-                                                    />
-                                                  </td>
-                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
-                                                    <input
-                                                      name="discountWithAmount"
-                                                      type="number"
-                                                      disabled={Boolean(
-                                                        item.discountWithPercentage
-                                                      )}
-                                                      onChange={(e) =>
-                                                        handleChange(i, e)
-                                                      }
-                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
-                                                    />
-                                                  </td>
-                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
-                                                    <input
-                                                      name="taxWithPercentage"
-                                                      type="number"
-                                                      disabled={Boolean(
-                                                        item.taxWithAmount
-                                                      )}
-                                                      onChange={(e) =>
-                                                        handleChange(i, e)
-                                                      }
-                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
-                                                    />
-                                                  </td>
-                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
-                                                    <input
-                                                      name="taxWithAmount"
-                                                      type="number"
-                                                      disabled={Boolean(
-                                                        item.taxWithPercentage
-                                                      )}
-                                                      onChange={(e) =>
-                                                        handleChange(i, e)
-                                                      }
-                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
-                                                    />
-                                                  </td>
-                                                  <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
-                                                    <input
-                                                      name="amount"
-                                                      type="number"
-                                                      onChange={(e) =>
-                                                        handleChange(i, e)
-                                                      }
-                                                      className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
-                                                    />
-                                                  </td>
-                                                </tr>
-                                              );
-                                            })}
-                                          <tr className="bg-white border-b">
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 "></td>
-                                            <td
-                                              colspan="2"
-                                              className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-center border-r"
-                                            >
-                                              Total
-                                            </td>
-                                            <td className=" border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              {total.totalQTY}
-                                            </td>
-                                            <td className=" border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              {total.price}
-                                            </td>
-                                            <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              {total.discountWithPercentage}
-                                            </td>
-                                            <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              {total.discountWithAmount}
-                                            </td>
-                                            <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              {total.taxWithPercentage}
-                                            </td>
-                                            <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              {total.taxWithAmount}
-                                            </td>
-                                            <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                              0
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                      </table>
+                                                      </Listbox>
+                                                    </td> */}
+
+                                                    <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                      <input
+                                                        type="number"
+                                                        name="qty"
+                                                        required
+                                                        className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                        onChange={(e) =>
+                                                          handleChange(i, e)
+                                                        }
+                                                      />
+                                                    </td>
+                                                    <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                      <input
+                                                        type="number"
+                                                        name="priceWithTax"
+                                                        required
+                                                        onChange={(e) =>
+                                                          handleChange(i, e)
+                                                        }
+                                                        className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                      />
+                                                    </td>
+                                                    <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                      <input
+                                                        name="discountWithPercentage"
+                                                        type="number"
+                                                        disabled={Boolean(
+                                                          item.discountWithAmount
+                                                        )}
+                                                        onChange={(e) =>
+                                                          handleChange(i, e)
+                                                        }
+                                                        className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                      />
+                                                    </td>
+                                                    <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                      <input
+                                                        name="discountWithAmount"
+                                                        type="number"
+                                                        disabled={Boolean(
+                                                          item.discountWithPercentage
+                                                        )}
+                                                        onChange={(e) =>
+                                                          handleChange(i, e)
+                                                        }
+                                                        className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                      />
+                                                    </td>
+                                                    <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                      <input
+                                                        name="taxWithPercentage"
+                                                        type="number"
+                                                        disabled={Boolean(
+                                                          item.taxWithAmount
+                                                        )}
+                                                        onChange={(e) =>
+                                                          handleChange(i, e)
+                                                        }
+                                                        className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                      />
+                                                    </td>
+                                                    <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                      <input
+                                                        name="taxWithAmount"
+                                                        type="number"
+                                                        disabled={Boolean(
+                                                          item.taxWithPercentage
+                                                        )}
+                                                        onChange={(e) =>
+                                                          handleChange(i, e)
+                                                        }
+                                                        className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                      />
+                                                    </td>
+                                                    <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                      <input
+                                                        name="amount"
+                                                        type="number"
+                                                        onChange={(e) =>
+                                                          handleChange(i, e)
+                                                        }
+                                                        className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                      />
+                                                    </td>
+                                                  </tr>
+                                                );
+                                              })}
+                                            <tr className="bg-white border-b">
+                                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 "></td>
+                                              <td
+                                                colspan="2"
+                                                className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-center border-r"
+                                              >
+                                                Total
+                                              </td>
+                                              <td className=" border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {total.totalQTY}
+                                              </td>
+                                              <td className=" border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {total.price}
+                                              </td>
+                                              <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {total.discountWithPercentage}
+                                              </td>
+                                              <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {total.discountWithAmount}
+                                              </td>
+                                              <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {total.taxWithPercentage}
+                                              </td>
+                                              <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {total.taxWithAmount}
+                                              </td>
+                                              <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                0
+                                              </td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                            <div className="space-y-3 sm:space-x-[30px] ">
-                              <button
-                                type="submit"
-                                className="opacity-[0.3] bg-violet600 shadow-blue100  w-full sm:w-auto block sm:inline-block  focus:outline-none rounded-[4px] sm:rounded-lg py-3 px-[30px] font-semibold text-[15px] leading-[22px] text-white"
-                                onClick={() => HandleInvoice()}
-                              >
-                                Save Changes
-                              </button>
-                              <button
-                                type="button"
-                                className="text-[15px] w-full sm:w-auto block sm:inline-block border border-violet600 sm:border-none font-semibold text-violet600 sm:text-[#8A8A8A] rounded-[4px]  focus:outline-none py-3 px-[30px] sm:p-0"
-                              >
-                                Cancel
-                              </button>
+                              <div className="space-y-3 sm:space-x-[30px] ">
+                                <button
+                                  type="submit"
+                                  className="opacity-[0.3] bg-violet600 shadow-blue100  w-full sm:w-auto block sm:inline-block  focus:outline-none rounded-[4px] sm:rounded-lg py-3 px-[30px] font-semibold text-[15px] leading-[22px] text-white"
+                                >
+                                  Save Changes
+                                </button>
+                                <button
+                                  type="button"
+                                  className="text-[15px] w-full sm:w-auto block sm:inline-block border border-violet600 sm:border-none font-semibold text-violet600 sm:text-[#8A8A8A] rounded-[4px]  focus:outline-none py-3 px-[30px] sm:p-0"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        </form>
                       </nav>
                     </div>
                   </div>
