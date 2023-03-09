@@ -59,7 +59,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     <>
       <div className="hidden md:fixed md:inset-y-0 md:flex md:w-[262px] md:flex-col">
         {/* Sidebar component, swap this element with another sidebar if you like */}
-        <div className="flex flex-grow flex-col overflow-y-auto bg-main pt-5">
+        <div className="flex flex-grow flex-col overflow-y-auto custom-scroll bg-main pt-5">
           <div className="flex flex-shrink-0 items-center px-10">
             <div className="">
               <img

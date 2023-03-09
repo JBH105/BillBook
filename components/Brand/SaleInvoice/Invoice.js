@@ -58,16 +58,19 @@ export default function Invoice(props) {
       item.QuntitySum = QuntitySum;
       let sum = item.priceWithTax * item.qty;
       item.TotalSum = item.priceWithTax * item.qty;
+      // Discount count
       if (item?.discountWithAmount) {
         item.TotalDiscount = item?.discountWithAmount;
       } else if (item?.discountWithPercentage) {
         item.TotalDiscount = (sum * item?.discountWithPercentage) / 100;
       }
+      // Text count
       if (item?.taxWithAmount) {
         item.TotalTax = item?.taxWithAmount;
       } else if (item?.taxWithPercentage) {
         item.TotalTax = (sum * item?.taxWithPercentage) / 100;
       }
+      // Total Count
       if (item.TotalDiscount && item.TotalTax) {
         item.TotalAmount = sum - item.TotalDiscount + item.TotalTax;
       } else if (item.TotalDiscount) {
@@ -77,12 +80,17 @@ export default function Invoice(props) {
       } else {
         item.TotalAmount = item.TotalSum;
       }
+      // QTY sum
       QuntitySum = item.qty ? QuntitySum + item.qty : QuntitySum;
+      // Price sum
       PriceSum = item.priceWithTax ? PriceSum + item.priceWithTax : PriceSum;
+      // Discount sum
       DiscountSum = item.TotalDiscount
         ? DiscountSum + item.TotalDiscount
         : DiscountSum;
+      // Text sum
       GSTSum = item.TotalTax ? GSTSum + item.TotalTax : GSTSum;
+      // Total amount sum
       AmountSum = item.TotalAmount ? AmountSum + item.TotalAmount : AmountSum;
       setTotal({
         QuntitySum: QuntitySum,

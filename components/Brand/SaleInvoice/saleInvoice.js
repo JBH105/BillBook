@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useMemo, useState } from "react";
 import { Dialog, Transition, Combobox, Listbox } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
@@ -40,25 +40,60 @@ export default function SaleInvoice({
 }) {
   const dispatch = useDispatch();
   const Product = useSelector((state) => state.Product.allstock);
-  console.log("🚀 ~ file: saleInvoice.js:31 ~ Product:", Product);
   const [date, setDate] = useState(new Date());
   const [saleData, setSaleData] = useState({});
   const [data, setData] = useState([{ productId: "", qty: "" }]);
+  console.log("🚀 ~ file: saleInvoice.js:47 ~ data:", data)
   const [total, setTotal] = useState({});
   const [query, setQuery] = useState("");
   const [selectedPerson, setSelectedPerson] = useState(null);
-  console.log("🚀 ~ file: saleInvoice.js:50 ~ selectedPerson:", selectedPerson);
 
   const filteredPeople =
     query === ""
       ? Product.data
       : Product.data.filter((person) => {
-          return person.product_ID.toLowerCase().includes(query.toLowerCase());
-        });
+        return person.product_ID.toLowerCase().includes(query.toLowerCase());
+      });
 
   const HandleSaleData = async (e) => {
     setSaleData({ ...saleData, [e.target.name]: e.target.value });
   };
+
+  useMemo(() => {
+    let amount = 0
+    data?.map((item, index) => {
+      let sum = item.priceWithTax * item.qty;
+      item.TotalSum = sum
+      // count discount
+      if (item?.discountWithAmount) {
+        item.TotalDiscount = item?.discountWithAmount;
+      } else if (item?.discountWithPercentage) {
+        item.TotalDiscount = (sum * item?.discountWithPercentage) / 100;
+      }
+      // Text count
+      if (item?.taxWithAmount) {
+        let sumtext = item?.taxWithAmount;
+        item.TotalTax = sumtext
+      } else if (item?.taxWithPercentage) {
+        item.TotalTax = (sum * item?.taxWithPercentage) / 100;
+      }
+      // Total Count
+      if (item.TotalDiscount && item.TotalTax) {
+        console.log(typeof item.TotalTax, typeof sum - item.TotalDiscount, typeof sum, typeof item.TotalDiscount, "TotalTax");
+        item.amount = parseInt(sum) - parseInt(item.TotalDiscount) + parseInt(item.TotalTax);
+      } else if (item.TotalDiscount) {
+        item.amount = parseInt(sum) - parseInt(item.TotalDiscount);
+      } else if (item.TotalTax) {
+        item.amount = parseInt(sum) + parseInt(item.TotalTax);
+      } else {
+        item.amount = parseInt(item.TotalSum);
+      }
+      amount = (parseInt(item.amount) ? parseInt(item.amount) : 0) +
+        amount;
+      setTotal({ ...total, amount: amount })
+    })
+
+  }, [data])
 
   const handleChange = (i, e) => {
     const { name } = e.target;
@@ -111,7 +146,7 @@ export default function SaleInvoice({
         discountWithPercentage: discountWithPercentage,
         discountWithAmount: discountWithAmount,
         taxWithPercentage: taxWithPercentage,
-        taxWithAmount: taxWithAmount,
+        taxWithAmount: taxWithAmount
       });
     });
   };
@@ -438,65 +473,65 @@ export default function SaleInvoice({
                                                           />
                                                           {filteredPeople?.length >
                                                             0 && (
-                                                            <Combobox.Options className="absolute z-[99999] custom-scroll max-h-[118px] mt-1 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                                              {filteredPeople.map(
-                                                                (person) => (
-                                                                  <Combobox.Option
-                                                                    key={
-                                                                      person.id
-                                                                    }
-                                                                    value={
-                                                                      person
-                                                                    }
-                                                                    className={({
-                                                                      active,
-                                                                    }) =>
-                                                                      classNames(
-                                                                        "relative cursor-default select-none py-2 pl-9 pr-3",
-                                                                        active
-                                                                          ? "bg-indigo-600 text-white"
-                                                                          : "text-gray-900"
-                                                                      )
-                                                                    }
-                                                                  >
-                                                                    {({
-                                                                      active,
-                                                                      selected,
-                                                                    }) => (
-                                                                      <>
-                                                                        {selected && (
+                                                              <Combobox.Options className="absolute z-[99999] custom-scroll max-h-[118px] mt-1 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                                                {filteredPeople.map(
+                                                                  (person) => (
+                                                                    <Combobox.Option
+                                                                      key={
+                                                                        person.id
+                                                                      }
+                                                                      value={
+                                                                        person
+                                                                      }
+                                                                      className={({
+                                                                        active,
+                                                                      }) =>
+                                                                        classNames(
+                                                                          "relative cursor-default select-none py-2 pl-9 pr-3",
+                                                                          active
+                                                                            ? "bg-indigo-600 text-white"
+                                                                            : "text-gray-900"
+                                                                        )
+                                                                      }
+                                                                    >
+                                                                      {({
+                                                                        active,
+                                                                        selected,
+                                                                      }) => (
+                                                                        <>
+                                                                          {selected && (
+                                                                            <span
+                                                                              className={classNames(
+                                                                                "absolute inset-y-0 left-[10px] flex items-center pr-4",
+                                                                                active
+                                                                                  ? "text-white"
+                                                                                  : "text-indigo-600"
+                                                                              )}
+                                                                            >
+                                                                              <CheckIcon
+                                                                                className="h-5 w-5"
+                                                                                aria-hidden="true"
+                                                                              />
+                                                                            </span>
+                                                                          )}
                                                                           <span
                                                                             className={classNames(
-                                                                              "absolute inset-y-0 left-[10px] flex items-center pr-4",
-                                                                              active
-                                                                                ? "text-white"
-                                                                                : "text-indigo-600"
+                                                                              "block truncate text-left",
+                                                                              selected &&
+                                                                              "font-semibold"
                                                                             )}
                                                                           >
-                                                                            <CheckIcon
-                                                                              className="h-5 w-5"
-                                                                              aria-hidden="true"
-                                                                            />
+                                                                            {
+                                                                              person.product_ID
+                                                                            }
                                                                           </span>
-                                                                        )}
-                                                                        <span
-                                                                          className={classNames(
-                                                                            "block truncate text-left",
-                                                                            selected &&
-                                                                              "font-semibold"
-                                                                          )}
-                                                                        >
-                                                                          {
-                                                                            person.product_ID
-                                                                          }
-                                                                        </span>
-                                                                      </>
-                                                                    )}
-                                                                  </Combobox.Option>
-                                                                )
-                                                              )}
-                                                            </Combobox.Options>
-                                                          )}
+                                                                        </>
+                                                                      )}
+                                                                    </Combobox.Option>
+                                                                  )
+                                                                )}
+                                                              </Combobox.Options>
+                                                            )}
                                                         </div>
                                                       </Combobox>
                                                     </td>
@@ -696,14 +731,8 @@ export default function SaleInvoice({
                                                       />
                                                     </td>
                                                     <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
-                                                      <input
-                                                        name="amount"
-                                                        type="number"
-                                                        onChange={(e) =>
-                                                          handleChange(i, e)
-                                                        }
-                                                        className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
-                                                      />
+
+                                                      {item?.amount ? item?.amount : ""}
                                                     </td>
                                                   </tr>
                                                 );
@@ -735,7 +764,7 @@ export default function SaleInvoice({
                                                 {total.taxWithAmount}
                                               </td>
                                               <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                0
+                                                {total.amount}
                                               </td>
                                             </tr>
                                           </tbody>
