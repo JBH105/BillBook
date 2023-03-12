@@ -5,30 +5,10 @@ import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { useDispatch, useSelector } from "react-redux";
 import { resetToast, showToast } from "../../../Redux/action/toast";
 import { AddInvoice, AllInvoice } from "../../../Redux/action/saleInvoice";
+import { totalinvoice } from "../../../util/totalinvoice";
+import { BiRupee } from "react-icons/bi";
+import { formatCurrency } from "../../../util/formatCurrency";
 
-const tab = [
-  {
-    name: "Recent History",
-  },
-  {
-    name: "Recent Transaction",
-  },
-  {
-    name: "Profile",
-  },
-];
-const people = [
-  { id: 1, name: "Wade Cooper" },
-  { id: 2, name: "Arlene Mccoy" },
-  { id: 3, name: "Devon Webb" },
-  { id: 4, name: "Tom Cook" },
-  { id: 5, name: "Tanya Fox" },
-  { id: 6, name: "Hellen Schmidt" },
-  { id: 7, name: "Caroline Schultz" },
-  { id: 8, name: "Mason Heaney" },
-  { id: 9, name: "Claudie Smitham" },
-  { id: 10, name: "Emil Schaefer" },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -43,57 +23,52 @@ export default function SaleInvoice({
   const [date, setDate] = useState(new Date());
   const [saleData, setSaleData] = useState({});
   const [data, setData] = useState([{ productId: "", qty: "" }]);
-  console.log("🚀 ~ file: saleInvoice.js:47 ~ data:", data)
   const [total, setTotal] = useState({});
   const [query, setQuery] = useState("");
-  const [selectedPerson, setSelectedPerson] = useState(null);
 
-  const filteredPeople =
-    query === ""
-      ? Product.data
-      : Product.data.filter((person) => {
-        return person.product_ID.toLowerCase().includes(query.toLowerCase());
-      });
+  const createInvoiceData = totalinvoice(data)
 
   const HandleSaleData = async (e) => {
     setSaleData({ ...saleData, [e.target.name]: e.target.value });
   };
-
   useMemo(() => {
-    let amount = 0
-    data?.map((item, index) => {
-      let sum = item.priceWithTax * item.qty;
-      item.TotalSum = sum
-      // count discount
-      if (item?.discountWithAmount) {
-        item.TotalDiscount = item?.discountWithAmount;
-      } else if (item?.discountWithPercentage) {
-        item.TotalDiscount = (sum * item?.discountWithPercentage) / 100;
-      }
-      // Text count
-      if (item?.taxWithAmount) {
-        let sumtext = item?.taxWithAmount;
-        item.TotalTax = sumtext
-      } else if (item?.taxWithPercentage) {
-        item.TotalTax = (sum * item?.taxWithPercentage) / 100;
-      }
-      // Total Count
-      if (item.TotalDiscount && item.TotalTax) {
-        console.log(typeof item.TotalTax, typeof sum - item.TotalDiscount, typeof sum, typeof item.TotalDiscount, "TotalTax");
-        item.amount = parseInt(sum) - parseInt(item.TotalDiscount) + parseInt(item.TotalTax);
-      } else if (item.TotalDiscount) {
-        item.amount = parseInt(sum) - parseInt(item.TotalDiscount);
-      } else if (item.TotalTax) {
-        item.amount = parseInt(sum) + parseInt(item.TotalTax);
-      } else {
-        item.amount = parseInt(item.TotalSum);
-      }
-      amount = (parseInt(item.amount) ? parseInt(item.amount) : 0) +
-        amount;
-      setTotal({ ...total, amount: amount })
-    })
+    setData([{ productId: "", qty: "" }])
+  }, [profileView])
+  // useMemo(() => {
+  //   let amount = 0
+  //   data?.map((item, index) => {
+  //     let sum = item.priceWithTax * item.qty;
+  //     item.TotalSum = sum
+  //     // count discount
+  //     if (item?.discountWithAmount) {
+  //       item.TotalDiscount = item?.discountWithAmount;
+  //     } else if (item?.discountWithPercentage) {
+  //       item.TotalDiscount = (sum * item?.discountWithPercentage) / 100;
+  //     }
+  //     // Text count
+  //     if (item?.taxWithAmount) {
+  //       let sumtext = item?.taxWithAmount;
+  //       item.TotalTax = sumtext
+  //     } else if (item?.taxWithPercentage) {
+  //       item.TotalTax = (sum * item?.taxWithPercentage) / 100;
+  //     }
+  //     // Total Count
+  //     if (item.TotalDiscount && item.TotalTax) {
+  //       console.log(typeof item.TotalTax, typeof sum - item.TotalDiscount, typeof sum, typeof item.TotalDiscount, "TotalTax");
+  //       item.amount = parseInt(sum) - parseInt(item.TotalDiscount) + parseInt(item.TotalTax);
+  //     } else if (item.TotalDiscount) {
+  //       item.amount = parseInt(sum) - parseInt(item.TotalDiscount);
+  //     } else if (item.TotalTax) {
+  //       item.amount = parseInt(sum) + parseInt(item.TotalTax);
+  //     } else {
+  //       item.amount = parseInt(item.TotalSum);
+  //     }
+  //     amount = (parseInt(item.amount) ? parseInt(item.amount) : 0) +
+  //       amount;
+  //     setTotal({ ...total, amount: amount })
+  //   })
 
-  }, [data])
+  // }, [data])
 
   const handleChange = (i, e) => {
     const { name } = e.target;
@@ -161,12 +136,12 @@ export default function SaleInvoice({
     setData([...data, { productId: "", qty: "" }]);
   };
 
-  const HandleInvoice = async () => {
+  const HandleInvoice = async (event) => {
+    event.preventDefault()
     const invoicedata = {
       user_Name: saleData.user_Name,
       phoneNo: saleData.phoneNo,
       invoice_Date: saleData.invoice_Date,
-      stateOfSupply: saleData.stateOfSupply,
       product: data,
     };
 
@@ -208,7 +183,6 @@ export default function SaleInvoice({
       }, 3000);
     }
   };
-  const [selected, setSelected] = useState(people[3]);
 
   return (
     <div>
@@ -314,22 +288,7 @@ export default function SaleInvoice({
                                         onChange={(e) => HandleSaleData(e)}
                                       />
                                     </div>
-                                    <div className="flex gap-[33px]">
-                                      <label className="block whitespace-nowrap md:mb-1 text-[13px] font-medium leading-5 text-gray700">
-                                        State of supply
-                                      </label>
-                                      <select
-                                        name="stateOfSupply"
-                                        className=" w-full border-b-2 min-w-[70px] text-center text-[13px] font-medium leading-5 text-gray700"
-                                        onChange={(e) => HandleSaleData(e)}
-                                      >
-                                        <option value="Select state">
-                                          Select state
-                                        </option>
-                                        <option value="One">One</option>
-                                        <option value="Two">Two</option>
-                                      </select>
-                                    </div>
+
                                   </div>
                                 </div>
 
@@ -342,29 +301,29 @@ export default function SaleInvoice({
                                             <tr className="border-b">
                                               <th
                                                 scope="col"
-                                                rowspan="2"
+                                                rowSpan="2"
                                                 className="text-sm font-medium text-gray-900 py-4 border-r"
                                               >
                                                 #
                                               </th>
                                               <th
-                                                colspan="2"
+                                                colSpan="2"
                                                 scope="col"
-                                                rowspan="2"
+                                                rowSpan="2"
                                                 className="text-sm font-medium min-w-[250px] max-w-[251px] text-gray-900 px-6 py-4 border-r"
                                               >
                                                 ITEM
                                               </th>
                                               <th
                                                 scope="col"
-                                                rowspan="2"
+                                                rowSpan="2"
                                                 className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
                                               >
                                                 QTY
                                               </th>
                                               <th
                                                 scope="col"
-                                                rowspan="2"
+                                                rowSpan="2"
                                                 className="text-sm font-medium text-gray-900 px-6"
                                               >
                                                 PRICE/UNIT
@@ -372,7 +331,7 @@ export default function SaleInvoice({
 
                                               <th
                                                 scope="col"
-                                                colspan="2"
+                                                colSpan="2"
                                                 className="text-sm font-medium text-gray-900 px-6 border-l border-r"
                                               >
                                                 DISCOUNT
@@ -380,7 +339,7 @@ export default function SaleInvoice({
 
                                               <th
                                                 scope="col"
-                                                colspan="2"
+                                                colSpan="2"
                                                 className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
                                               >
                                                 TAX
@@ -388,7 +347,7 @@ export default function SaleInvoice({
 
                                               <th
                                                 scope="col"
-                                                rowspan="2"
+                                                rowSpan="2"
                                                 className="text-sm font-medium text-gray-900 px-6 py-4 border-r"
                                               >
                                                 <div className="flex justify-between w-full">
@@ -411,7 +370,7 @@ export default function SaleInvoice({
                                                 scope="col"
                                                 className="text-sm font-medium text-gray-900 px-6  border-l border-r"
                                               >
-                                                <span className="">AMOUNT</span>
+                                                <span className=""><BiRupee className="inline-block " /></span>
                                               </th>
                                               <th
                                                 scope="col"
@@ -423,20 +382,20 @@ export default function SaleInvoice({
                                                 scope="col"
                                                 className="text-sm font-medium text-gray-900 px-6  border-l border-r"
                                               >
-                                                <span className="">AMOUNT</span>
+                                                <span className=""><BiRupee className="inline-block " /></span>
                                               </th>
                                             </tr>
                                           </thead>
                                           <tbody>
-                                            {data &&
-                                              data.map((item, i) => {
+                                            {createInvoiceData.data &&
+                                              createInvoiceData.data.map((item, i) => {
                                                 return (
                                                   <tr className="border-b">
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r">
                                                       {i}
                                                     </td>
                                                     <td
-                                                      colspan="2"
+                                                      colSpan="2"
                                                       className="border-r"
                                                     >
                                                       <Combobox
@@ -444,9 +403,6 @@ export default function SaleInvoice({
                                                         as="div"
                                                         value={item.product_ID}
                                                         required
-                                                        onChange={
-                                                          setSelectedPerson
-                                                        }
                                                       >
                                                         <Combobox.Label className="block text-sm font-medium text-gray-700"></Combobox.Label>
                                                         <div className="relative h-full">
@@ -471,10 +427,10 @@ export default function SaleInvoice({
                                                               person?.product_ID
                                                             }
                                                           />
-                                                          {filteredPeople?.length >
+                                                          {Product?.data?.length >
                                                             0 && (
                                                               <Combobox.Options className="absolute z-[99999] custom-scroll max-h-[118px] mt-1 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                                                {filteredPeople.map(
+                                                                {Product?.data?.map(
                                                                   (person) => (
                                                                     <Combobox.Option
                                                                       key={
@@ -535,133 +491,12 @@ export default function SaleInvoice({
                                                         </div>
                                                       </Combobox>
                                                     </td>
-
-                                                    {/* <td
-                                                      colspan="2"
-                                                      className="border-r"
-                                                    >
-                                                      <Listbox
-                                                        className="h-full  "
-                                                        as="div"
-                                                        value={item.product_ID}
-                                                        required
-                                                        onChange={
-                                                          setSelectedPerson
-                                                        }
-                                                      >
-                                                        {({ open }) => (
-                                                          <>
-                                                            <div className="relative mt-2">
-                                                              <Listbox.Button
-                                                                className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                                                name="productId"
-                                                                onChange={(
-                                                                  event
-                                                                ) => {
-                                                                  setQuery(
-                                                                    event.target
-                                                                      .value
-                                                                  );
-                                                                  handleChange(
-                                                                    i,
-                                                                    event
-                                                                  );
-                                                                }}
-                                                                displayValue={(
-                                                                  person
-                                                                ) =>
-                                                                  person?.product_ID
-                                                                }
-                                                              >
-                                                                <span className="block truncate">
-                                                                  {
-                                                                    selectedPerson?.product_ID
-                                                                  }
-                                                                </span>
-                                                              </Listbox.Button>
-
-                                                              <Transition
-                                                                show={open}
-                                                                as={Fragment}
-                                                                leave="transition ease-in duration-100"
-                                                                leaveFrom="opacity-100"
-                                                                leaveTo="opacity-0"
-                                                              >
-                                                                <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                                                  {filteredPeople.map(
-                                                                    (
-                                                                      person
-                                                                    ) => (
-                                                                      <Listbox.Option
-                                                                        key={
-                                                                          person.id
-                                                                        }
-                                                                        className={({
-                                                                          active,
-                                                                        }) =>
-                                                                          classNames(
-                                                                            active
-                                                                              ? "bg-indigo-600 text-white"
-                                                                              : "text-gray-900",
-                                                                            "relative cursor-default select-none py-2 pl-3 pr-9"
-                                                                          )
-                                                                        }
-                                                                        value={
-                                                                          person
-                                                                        }
-                                                                      >
-                                                                        {({
-                                                                          selected,
-                                                                          active,
-                                                                        }) => (
-                                                                          <>
-                                                                            <span
-                                                                              className={classNames(
-                                                                                selected
-                                                                                  ? "font-semibold"
-                                                                                  : "font-normal",
-                                                                                "block truncate"
-                                                                              )}
-                                                                            >
-                                                                              {
-                                                                                person.product_ID
-                                                                              }
-                                                                            </span>
-
-                                                                            {selected ? (
-                                                                              <span
-                                                                                className={classNames(
-                                                                                  active
-                                                                                    ? "text-white"
-                                                                                    : "text-indigo-600",
-                                                                                  "absolute inset-y-0 right-0 flex items-center pr-4"
-                                                                                )}
-                                                                              >
-                                                                                <CheckIcon
-                                                                                  className="h-5 w-5"
-                                                                                  aria-hidden="true"
-                                                                                />
-                                                                              </span>
-                                                                            ) : null}
-                                                                          </>
-                                                                        )}
-                                                                      </Listbox.Option>
-                                                                    )
-                                                                  )}
-                                                                </Listbox.Options>
-                                                              </Transition>
-                                                            </div>
-                                                          </>
-                                                        )}
-                                                      </Listbox>
-                                                    </td> */}
-
                                                     <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
                                                       <input
                                                         type="number"
                                                         name="qty"
                                                         required
-                                                        className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                        className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
                                                         onChange={(e) =>
                                                           handleChange(i, e)
                                                         }
@@ -675,7 +510,7 @@ export default function SaleInvoice({
                                                         onChange={(e) =>
                                                           handleChange(i, e)
                                                         }
-                                                        className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                        className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
                                                       />
                                                     </td>
                                                     <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
@@ -688,7 +523,7 @@ export default function SaleInvoice({
                                                         onChange={(e) =>
                                                           handleChange(i, e)
                                                         }
-                                                        className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                        className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
                                                       />
                                                     </td>
                                                     <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
@@ -701,7 +536,7 @@ export default function SaleInvoice({
                                                         onChange={(e) =>
                                                           handleChange(i, e)
                                                         }
-                                                        className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                        className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
                                                       />
                                                     </td>
                                                     <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
@@ -714,10 +549,10 @@ export default function SaleInvoice({
                                                         onChange={(e) =>
                                                           handleChange(i, e)
                                                         }
-                                                        className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                        className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
                                                       />
                                                     </td>
-                                                    <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                    <td className="text-sm text-center text-gray-900 font-light whitespace-nowrap border-r">
                                                       <input
                                                         name="taxWithAmount"
                                                         type="number"
@@ -727,12 +562,13 @@ export default function SaleInvoice({
                                                         onChange={(e) =>
                                                           handleChange(i, e)
                                                         }
-                                                        className="text-sm text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                        className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
                                                       />
                                                     </td>
                                                     <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
 
-                                                      {item?.amount ? item?.amount : ""}
+                                                      {item?.TotalAmount ? formatCurrency(item?.TotalAmount, 'INR') : ""}
+
                                                     </td>
                                                   </tr>
                                                 );
@@ -740,31 +576,29 @@ export default function SaleInvoice({
                                             <tr className="bg-white border-b">
                                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 "></td>
                                               <td
-                                                colspan="2"
-                                                className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-center border-r"
+                                                colSpan="2"
+                                                className="text-sm whitespace-nowrap px-3 font-semibold py-4 text-sm text-gray-900 border-r"
                                               >
                                                 Total
                                               </td>
-                                              <td className=" border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {total.totalQTY}
+                                              <td className=" border-r whitespace-nowrap px-3 font-semibold py-4 text-sm text-gray-900">
+                                                {createInvoiceData?.SubTotal.totalQTY}
                                               </td>
-                                              <td className=" border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {total.price}
+                                              <td className="border-r whitespace-nowrap px-3 font-semibold py-4 text-sm text-gray-900">
+                                                {createInvoiceData?.SubTotal.price}
                                               </td>
-                                              <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {total.discountWithPercentage}
+                                              <td
+                                                colSpan="2"
+                                                className="border-r whitespace-nowrap px-3 font-semibold py-4 text-sm text-gray-900">
+                                                {formatCurrency(createInvoiceData?.total.DiscountSum, 'INR')}
                                               </td>
-                                              <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {total.discountWithAmount}
+                                              <td
+                                                colSpan="2"
+                                                className="border-r whitespace-nowrap px-3 font-semibold py-4 text-sm text-gray-900">
+                                                {formatCurrency(createInvoiceData?.total.GSTSum, 'INR')}
                                               </td>
-                                              <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {total.taxWithPercentage}
-                                              </td>
-                                              <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {total.taxWithAmount}
-                                              </td>
-                                              <td className="border-r text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {total.amount}
+                                              <td className=" whitespace-nowrap px-3 font-semibold py-4 text-sm text-gray-900">
+                                                {formatCurrency(createInvoiceData?.total.AmountSum, 'INR')}
                                               </td>
                                             </tr>
                                           </tbody>

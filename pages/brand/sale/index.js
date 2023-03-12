@@ -83,7 +83,7 @@ export default function Index() {
           <div className="md:flex justify-between">
             <div className="flex items-center">
               <h2 className="text-black500  font-semibold text-[17px] leading-[26px]">
-                Stock List 123
+                Stock List
               </h2>
             </div>
             <div>
@@ -113,6 +113,12 @@ export default function Index() {
                               scope="col"
                               className="px-3 py-[9px]  text-left text-[15px] font-semibold text-violet600"
                             >
+                              Invoice No
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-3 py-[9px]  text-left text-[15px] font-semibold text-violet600"
+                            >
                               User Name
                             </th>
                             <th
@@ -125,27 +131,22 @@ export default function Index() {
                               scope="col"
                               className="px-3 py-[9px]   text-left text-[15px] font-semibold text-violet600"
                             >
-                              Product Name
+                            Total Quantity
                             </th>
                             <th
                               scope="col"
                               className="px-3 py-[9px]   text-left text-[15px] font-semibold text-violet600"
                             >
-                              Total Quantity
+                              Total Amount
                             </th>
 
                             <th
                               scope="col"
                               className="px-3 py-[9px]   text-left text-[15px] font-semibold text-violet600"
                             >
-                              Available Quantity
+                              Status
                             </th>
-                            <th
-                              scope="col"
-                              className="px-3 py-[9px] flex justify-center text-center text-left text-[15px] font-semibold text-violet600"
-                            >
-                              Option
-                            </th>
+                           
                           </tr>
                         </thead>
                         <tbody>
@@ -153,16 +154,20 @@ export default function Index() {
                             allInvoice.data.map((person, personIdx) => (
                               <tr
                                 key={person.email}
-                                className={`${
-                                  personIdx % 2 === 1
+                                className={`${personIdx % 2 === 1
                                     ? undefined
                                     : "bg-[#D9D9D9] bg-opacity-[0.2]"
-                                } influencertable`}
+                                  } influencertable`}
                                 onClick={() => {
                                   setOpenInvoice(true);
                                   setSaleData(person);
                                 }}
                               >
+                                <td className="whitespace-nowrap py-3 px-3 cursor-pointer text-sm ">
+                                  <div className="flex space-x-[7px]">
+                                    <div className="">{person?.id}</div>
+                                  </div>
+                                </td>
                                 <td className="whitespace-nowrap py-3 px-3 cursor-pointer text-sm ">
                                   <div className="flex space-x-[7px]">
                                     <div className="">{person?.user_Name}</div>
@@ -183,20 +188,18 @@ export default function Index() {
                                 </td>
                                 <td className="whitespace-nowrap px-3 py-3 text-sm text-gray-500">
                                   <span
-                                    className={`${
-                                      person.total_Quantity > 15
+                                    className={`${person.total_Quantity > 15
                                         ? " bg-green100 text-green600"
                                         : person.total_Quantity < 15 &&
                                           person.total_Quantity > 5
-                                        ? " bg-[#FFEFDB] text-[#FF8B00]"
-                                        : "bg-[#f9d6d6] text-[#ff2500]"
-                                    } text-black400 px-[25px] py-[3px] rounded font-medium leading-[15px] text-[13px] text-center`}
+                                          ? " bg-[#FFEFDB] text-[#FF8B00]"
+                                          : "bg-[#f9d6d6] text-[#ff2500]"
+                                      } text-black400 px-[25px] py-[3px] rounded font-medium leading-[15px] text-[13px] text-center`}
                                   >
-                                    {person.total_Quantity}
+                                    Credit
                                   </span>
                                 </td>
-                                <td className="whitespace-nowrap text-sm text-gray-500"></td>
-                                <td></td>
+                                
                               </tr>
                             ))}
                         </tbody>
