@@ -1,4 +1,4 @@
-import React, {  useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -170,14 +170,14 @@ const InfluencerSearch = () => {
                               </td>
                               <td className="whitespace-nowrap px-3 py-3 text-sm text-gray-500">
                                 <span
-                                  className={`${person.total_Quantity > 15
+                                  className={`${person.available_Quantity > 15
                                     ? " bg-green100 text-green600"
-                                    : person.total_Quantity < 15 && person.total_Quantity > 5
+                                    : person.available_Quantity < 15 && person.available_Quantity > 5
                                       ? " bg-[#FFEFDB] text-[#FF8B00]"
                                       : "bg-[#f9d6d6] text-[#ff2500]"
                                     } text-black400 px-[25px] py-[3px] rounded font-medium leading-[15px] text-[13px] text-center`}
                                 >
-                                  {person.total_Quantity}
+                                  {person.available_Quantity ? person.available_Quantity : 0}
                                 </span>
                               </td>
                               <td className="whitespace-nowrap text-sm text-gray-500">
