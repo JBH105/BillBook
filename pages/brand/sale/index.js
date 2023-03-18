@@ -14,6 +14,8 @@ import { resetToast, showToast } from "../../../Redux/action/toast";
 import SaleInvoice from "../../../components/Brand/SaleInvoice/saleInvoice";
 import { AllInvoice } from "../../../Redux/action/saleInvoice";
 import Invoice from "../../../components/Brand/SaleInvoice/Invoice";
+import { totalinvoice } from "../../../util/totalinvoice";
+import { formatCurrency } from "../../../util/formatCurrency";
 
 export default function Index() {
   const dispatch = useDispatch();
@@ -26,6 +28,7 @@ export default function Index() {
   const [saleData, setSaleData] = useState();
 
   const allInvoice = useSelector((state) => state.Invoice.allInvoice);
+  console.log("🚀 ~ file: index.js:29 ~ Index ~ allInvoice:", allInvoice)
   const allStock = useSelector((state) => state.Product.allstock);
   const [page, setPage] = useState(1);
 
@@ -83,7 +86,7 @@ export default function Index() {
           <div className="md:flex justify-between">
             <div className="flex items-center">
               <h2 className="text-black500  font-semibold text-[17px] leading-[26px]">
-                Stock List
+                Invoice
               </h2>
             </div>
             <div>
@@ -131,7 +134,7 @@ export default function Index() {
                               scope="col"
                               className="px-3 py-[9px]   text-left text-[15px] font-semibold text-violet600"
                             >
-                            Total Quantity
+                              Total Quantity
                             </th>
                             <th
                               scope="col"
@@ -146,62 +149,65 @@ export default function Index() {
                             >
                               Status
                             </th>
-                           
+
                           </tr>
                         </thead>
                         <tbody>
                           {allInvoice?.data &&
-                            allInvoice.data.map((person, personIdx) => (
-                              <tr
-                                key={person.email}
-                                className={`${personIdx % 2 === 1
+                            allInvoice.data.map((person, personIdx) => {
+                              const count = totalinvoice(person?.saleProducts)
+                              return (
+                                <tr
+                                  key={person.email}
+                                  className={`${personIdx % 2 === 1
                                     ? undefined
                                     : "bg-[#D9D9D9] bg-opacity-[0.2]"
-                                  } influencertable`}
-                                onClick={() => {
-                                  setOpenInvoice(true);
-                                  setSaleData(person);
-                                }}
-                              >
-                                <td className="whitespace-nowrap py-3 px-3 cursor-pointer text-sm ">
-                                  <div className="flex space-x-[7px]">
-                                    <div className="">{person?.id}</div>
-                                  </div>
-                                </td>
-                                <td className="whitespace-nowrap py-3 px-3 cursor-pointer text-sm ">
-                                  <div className="flex space-x-[7px]">
-                                    <div className="">{person?.user_Name}</div>
-                                  </div>
-                                </td>
-                                <td className="whitespace-nowrap py-3 px-3 text-sm  font-medium text-gray-900 ">
-                                  <div className="flex space-x-[7px]">
-                                    <div className="">{person?.phoneNo}</div>
-                                  </div>
-                                </td>
-                                <td className="whitespace-nowrap px-3 py-3 leading-5 font-medium  text-sm font-medium text-gray-900">
-                                  <div className=" ">
-                                    {person?.product_Name}
-                                  </div>
-                                </td>
-                                <td className="whitespace-nowrap px-3 py-3 leading-5 font-medium  text-xs font-medium text-gray-900">
-                                  {person?.total_Quantity}
-                                </td>
-                                <td className="whitespace-nowrap px-3 py-3 text-sm text-gray-500">
-                                  <span
-                                    className={`${person.total_Quantity > 15
+                                    } influencertable`}
+                                  onClick={() => {
+                                    setOpenInvoice(true);
+                                    setSaleData(person);
+                                  }}
+                                >
+                                  <td className="whitespace-nowrap py-3 px-3 cursor-pointer text-sm ">
+                                    <div className="flex space-x-[7px]">
+                                      <div className="">{person?.id}</div>
+                                    </div>
+                                  </td>
+                                  <td className="whitespace-nowrap py-3 px-3 cursor-pointer text-sm ">
+                                    <div className="flex space-x-[7px]">
+                                      <div className="">{person?.user_Name}</div>
+                                    </div>
+                                  </td>
+                                  <td className="whitespace-nowrap py-3 px-3 text-sm  font-medium text-gray-900 ">
+                                    <div className="flex space-x-[7px]">
+                                      <div className="">{person?.phoneNo}</div>
+                                    </div>
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 py-3 leading-5 font-medium  text-sm font-medium text-gray-900">
+                                    <div className=" ">
+                                      {count?.total?.QuntitySum}
+                                    </div>
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 py-3 leading-5 font-medium  text-sm font-bold text-gray-900">
+                                    {formatCurrency(count?.total?.AmountSum, "INR")}
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 py-3 text-sm text-gray-500">
+                                    <span
+                                      className={`${person.total_Quantity > 15
                                         ? " bg-green100 text-green600"
                                         : person.total_Quantity < 15 &&
                                           person.total_Quantity > 5
                                           ? " bg-[#FFEFDB] text-[#FF8B00]"
                                           : "bg-[#f9d6d6] text-[#ff2500]"
-                                      } text-black400 px-[25px] py-[3px] rounded font-medium leading-[15px] text-[13px] text-center`}
-                                  >
-                                    Credit
-                                  </span>
-                                </td>
-                                
-                              </tr>
-                            ))}
+                                        } text-black400 px-[25px] py-[3px] rounded font-medium leading-[15px] text-[13px] text-center`}
+                                    >
+                                      Credit
+                                    </span>
+                                  </td>
+
+                                </tr>
+                              )
+                            })}
                         </tbody>
                       </table>
                     </div>

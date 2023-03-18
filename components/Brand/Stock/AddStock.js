@@ -24,7 +24,7 @@ export default function AddStock({ profileView, setProfileView, userDetail }) {
   const initialValues = {
     id: userDetail ? userDetail.product_ID : " ",
     product: userDetail ? userDetail.product_Name : " ",
-    quantity: userDetail ? userDetail.total_Quantity : " ",
+    quantity: userDetail ? userDetail.available_Quantity : " ",
     purchase: userDetail ? userDetail.purchase_Price : " ",
     selling: userDetail ? userDetail.selling_Price : " ",
   };
