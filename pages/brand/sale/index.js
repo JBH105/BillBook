@@ -16,6 +16,7 @@ import { AllInvoice } from "../../../Redux/action/saleInvoice";
 import Invoice from "../../../components/Brand/SaleInvoice/Invoice";
 import { totalinvoice } from "../../../util/totalinvoice";
 import { formatCurrency } from "../../../util/formatCurrency";
+import Pagination from "../../../components/Pagination/Pagination";
 
 export default function Index() {
   const dispatch = useDispatch();
@@ -28,7 +29,6 @@ export default function Index() {
   const [saleData, setSaleData] = useState();
 
   const allInvoice = useSelector((state) => state.Invoice.allInvoice);
-  console.log("🚀 ~ file: index.js:29 ~ Index ~ allInvoice:", allInvoice)
   const allStock = useSelector((state) => state.Product.allstock);
   const [page, setPage] = useState(1);
 
@@ -214,34 +214,13 @@ export default function Index() {
                   </div>
                 </div>
               </div>
-              {/* Pagination */}
-              <div className="flex justify-end items-center pt-5">
-                <div className="flex items-center space-x-[19px]">
-                  <button className="bg-[#CECDD066] flex items-center justify-center rounded-[6px] w-[28.38px] h-[28.38px]">
-                    <img src="/assets/icons/left-gray.svg" />
-                  </button>
-                  {pageLimit &&
-                    pageLimit.map((item, index) => {
-                      return (
-                        <div>
-                          <button
-                            className={
-                              item === allInvoice.current
-                                ? "bg-violet600 rounded-[6px] flex items-center justify-center text-white ring-1 ring-purple100 w-[24.75px] h-[24.75px]  text-[13px] font-semibold leading-5"
-                                : "bg-white text-violet600 hover:bg-violet600 rounded-[6px] flex items-center justify-center hover:text-white ring-1 ring-purple100 w-[24.75px] h-[24.75px]  text-[13px] font-semibold leading-5"
-                            }
-                            onClick={() => setPage(item)}
-                          >
-                            {item}
-                          </button>
-                        </div>
-                      );
-                    })}
-                  <button className="bg-[#CECDD066] flex items-center justify-center rounded-[6px] w-[28.38px] h-[28.38px]">
-                    <img src="/assets/icons/right-gray.svg" />
-                  </button>
-                </div>
-              </div>
+              <Pagination
+                className="pagination-bar"
+                currentPage={allInvoice.current}
+                totalCount={allInvoice.results}
+                pageSize={10}
+                onPageChange={(pages) => setPage(pages)}
+              />
             </>
           ) : (
             <div className="flex h-[74vh] justify-center ">

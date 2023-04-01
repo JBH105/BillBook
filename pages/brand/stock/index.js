@@ -8,6 +8,7 @@ import BASE_URL from "../../../URL";
 import Image from "../../../components/ImageBox/Image";
 import Tooltip from "../../../components/Tooltip/tooltip";
 import { resetToast, showToast } from "../../../Redux/action/toast";
+import Pagination from "../../../components/Pagination/Pagination";
 
 const InfluencerSearch = () => {
   const dispatch = useDispatch();
@@ -202,37 +203,13 @@ const InfluencerSearch = () => {
                     </div>
                   </div>
                 </div>
-                {/* Pagination */}
-                <div className="flex justify-end items-center pt-5">
-                  <div className="flex items-center space-x-[19px]">
-                    <button className="bg-[#CECDD066] flex items-center justify-center rounded-[6px] w-[28.38px] h-[28.38px]">
-                      <img src="/assets/icons/left-gray.svg" />
-                    </button>
-                    {pageLimit &&
-                      pageLimit.map((item, index) => {
-                        return (
-                          <div>
-                            <button
-                              // className="bg-violet600 rounded-[6px] flex items-center justify-center text-white ring-1 ring-purple100 w-[24.75px] h-[24.75px]  text-[13px] font-semibold leading-5"
-                              // bg-white text-violet600 hover:bg-violet600   hover:text-white ring-1
-
-                              className={
-                                item === allStock.current
-                                  ? "bg-violet600 rounded-[6px] flex items-center justify-center text-white ring-1 ring-purple100 w-[24.75px] h-[24.75px]  text-[13px] font-semibold leading-5"
-                                  : "bg-white text-violet600 hover:bg-violet600 rounded-[6px] flex items-center justify-center hover:text-white ring-1 ring-purple100 w-[24.75px] h-[24.75px]  text-[13px] font-semibold leading-5"
-                              }
-                              onClick={() => setPage(item)}
-                            >
-                              {item}
-                            </button>
-                          </div>
-                        );
-                      })}
-                    <button className="bg-[#CECDD066] flex items-center justify-center rounded-[6px] w-[28.38px] h-[28.38px]">
-                      <img src="/assets/icons/right-gray.svg" />
-                    </button>
-                  </div>
-                </div>
+                <Pagination
+                  className="pagination-bar"
+                  currentPage={allStock.current}
+                  totalCount={allStock.results}
+                  pageSize={10}
+                  onPageChange={(pages) => setPage(pages)}
+                />
               </div>
               :
               <img src="/assets/datanotfound.svg" />

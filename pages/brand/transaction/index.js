@@ -4,6 +4,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { randomIntFromInterval } from "../../../util/randomNumber";
 import { useDispatch, useSelector } from "react-redux";
 import { AllTransaction } from "../../../Redux/action/transaction";
+import Pagination from "../../../components/Pagination/Pagination";
 
 
 const InfluencerSearch = () => {
@@ -103,11 +104,10 @@ const InfluencerSearch = () => {
                           allTransaction.data.map((person, personIdx) => (
                             <tr
                               key={person.email}
-                              className={`${
-                                personIdx % 2 === 1
+                              className={`${personIdx % 2 === 1
                                   ? undefined
                                   : "bg-[#D9D9D9] bg-opacity-[0.2]"
-                              } influencertable`}
+                                } influencertable`}
                             >
                               <td className="whitespace-nowrap py-3 px-3 cursor-pointer text-sm ">
                                 <div className="flex items-center">
@@ -156,13 +156,12 @@ const InfluencerSearch = () => {
                               </td>
                               <td className="whitespace-nowrap min-w-[210px] text-center px-3 py-3 text-sm text-gray-500">
                                 <span
-                                  className={`${
-                                    person.transactionType === "Credit"
+                                  className={`${person.transactionType === "Credit"
                                       ? " bg-green100 text-green600"
                                       : person.transactionType === "Debit"
-                                      ? " bg-[#FFEFDB] text-[#FF8B00]"
-                                      : ""
-                                  } text-black400 px-[5px] py-[3px] rounded font-medium leading-[15px] text-[13px] text-center`}
+                                        ? " bg-[#FFEFDB] text-[#FF8B00]"
+                                        : ""
+                                    } text-black400 px-[5px] py-[3px] rounded font-medium leading-[15px] text-[13px] text-center`}
                                 >
                                   {person.transactionType}
                                 </span>
@@ -181,34 +180,13 @@ const InfluencerSearch = () => {
                 </div>
               </div>
             </div>
-            {/* Pagination */}
-            <div className="flex justify-end items-center pt-5">
-              <div className="flex items-center space-x-[19px]">
-                <button className="bg-[#CECDD066] flex items-center justify-center rounded-[6px] w-[28.38px] h-[28.38px]">
-                  <img src="/assets/icons/left-gray.svg" />
-                </button>
-                {pageLimit &&
-                  pageLimit.map((item, index) => {
-                    return (
-                      <div>
-                        <button
-                          className={
-                            item === allTransaction.current
-                              ? "bg-violet600 rounded-[6px] flex items-center justify-center text-white ring-1 ring-purple100 w-[24.75px] h-[24.75px]  text-[13px] font-semibold leading-5"
-                              : "bg-white text-violet600 hover:bg-violet600 rounded-[6px] flex items-center justify-center hover:text-white ring-1 ring-purple100 w-[24.75px] h-[24.75px]  text-[13px] font-semibold leading-5"
-                          }
-                          onClick={() => setPage(item)}
-                        >
-                          {item}
-                        </button>
-                      </div>
-                    );
-                  })}
-                <button className="bg-[#CECDD066] flex items-center justify-center rounded-[6px] w-[28.38px] h-[28.38px]">
-                  <img src="/assets/icons/right-gray.svg" />
-                </button>
-              </div>
-            </div>
+            <Pagination
+              className="pagination-bar"
+              currentPage={allTransaction.current}
+              totalCount={allTransaction.results}
+              pageSize={10}
+              onPageChange={(pages) => setPage(pages)}
+            />
           </div>
         </div>
       </main>
