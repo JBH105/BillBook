@@ -8,7 +8,8 @@ import { AddInvoice, AllInvoice } from "../../../Redux/action/saleInvoice";
 import { totalinvoice } from "../../../util/totalinvoice";
 import { BiRupee } from "react-icons/bi";
 import { formatCurrency } from "../../../util/formatCurrency";
-
+import { AllProduct } from "../../../Redux/action/stock";
+import Error from "../../Error";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -20,55 +21,24 @@ export default function SaleInvoice({
 }) {
   const dispatch = useDispatch();
   const Product = useSelector((state) => state.Product.allstock);
+  console.log("🚀 ~ file: saleInvoice.js:22 ~ Product:", Product);
   const [date, setDate] = useState(new Date());
   const [saleData, setSaleData] = useState({});
   const [data, setData] = useState([{ productId: "", qty: "" }]);
-  const [total, setTotal] = useState({});
   const [query, setQuery] = useState("");
 
-  const createInvoiceData = totalinvoice(data)
+  const createInvoiceData = totalinvoice(data);
+  console.log(
+    "🚀 ~ file: saleInvoice.js:30 ~ createInvoiceData:",
+    createInvoiceData
+  );
 
   const HandleSaleData = async (e) => {
     setSaleData({ ...saleData, [e.target.name]: e.target.value });
   };
   useMemo(() => {
-    setData([{ productId: "", qty: "" }])
-  }, [profileView])
-  // useMemo(() => {
-  //   let amount = 0
-  //   data?.map((item, index) => {
-  //     let sum = item.priceWithTax * item.qty;
-  //     item.TotalSum = sum
-  //     // count discount
-  //     if (item?.discountWithAmount) {
-  //       item.TotalDiscount = item?.discountWithAmount;
-  //     } else if (item?.discountWithPercentage) {
-  //       item.TotalDiscount = (sum * item?.discountWithPercentage) / 100;
-  //     }
-  //     // Text count
-  //     if (item?.taxWithAmount) {
-  //       let sumtext = item?.taxWithAmount;
-  //       item.TotalTax = sumtext
-  //     } else if (item?.taxWithPercentage) {
-  //       item.TotalTax = (sum * item?.taxWithPercentage) / 100;
-  //     }
-  //     // Total Count
-  //     if (item.TotalDiscount && item.TotalTax) {
-  //       console.log(typeof item.TotalTax, typeof sum - item.TotalDiscount, typeof sum, typeof item.TotalDiscount, "TotalTax");
-  //       item.amount = parseInt(sum) - parseInt(item.TotalDiscount) + parseInt(item.TotalTax);
-  //     } else if (item.TotalDiscount) {
-  //       item.amount = parseInt(sum) - parseInt(item.TotalDiscount);
-  //     } else if (item.TotalTax) {
-  //       item.amount = parseInt(sum) + parseInt(item.TotalTax);
-  //     } else {
-  //       item.amount = parseInt(item.TotalSum);
-  //     }
-  //     amount = (parseInt(item.amount) ? parseInt(item.amount) : 0) +
-  //       amount;
-  //     setTotal({ ...total, amount: amount })
-  //   })
-
-  // }, [data])
+    setData([{ productId: "", qty: "" }]);
+  }, [profileView]);
 
   const handleChange = (i, e) => {
     const { name } = e.target;
@@ -76,52 +46,20 @@ export default function SaleInvoice({
     let newFormValues = [...data];
     newFormValues[i][name] = text;
     setData(newFormValues);
-    let sum = 0;
-    let priceWithTax = 0;
-    let priceWithoutTax = 0;
-    let discountWithPercentage = 0;
-    let discountWithAmount = 0;
-    let taxWithPercentage = 0;
-    let taxWithAmount = 0;
 
-    data?.forEach((item, index) => {
-      sum = (parseInt(item.qty) ? parseInt(item.qty) : 0) + sum;
-
-      priceWithTax =
-        (parseInt(item.priceWithTax) ? parseInt(item.priceWithTax) : 0) +
-        priceWithTax;
-
-      priceWithoutTax =
-        (parseInt(item.priceWithoutTax) ? parseInt(item.priceWithoutTax) : 0) +
-        priceWithoutTax;
-
-      discountWithPercentage =
-        (parseInt(item.discountWithPercentage)
-          ? parseInt(item.discountWithPercentage)
-          : 0) + discountWithPercentage;
-
-      discountWithAmount =
-        (parseInt(item.discountWithAmount)
-          ? parseInt(item.discountWithAmount)
-          : 0) + discountWithAmount;
-
-      taxWithPercentage =
-        (parseInt(item.taxWithPercentage)
-          ? parseInt(item.taxWithPercentage)
-          : 0) + taxWithPercentage;
-
-      taxWithAmount =
-        (parseInt(item.taxWithAmount) ? parseInt(item.taxWithAmount) : 0) +
-        taxWithAmount;
-
-      setTotal({
-        ...total,
-        totalQTY: sum,
-        price: priceWithTax,
-        discountWithPercentage: discountWithPercentage,
-        discountWithAmount: discountWithAmount,
-        taxWithPercentage: taxWithPercentage,
-        taxWithAmount: taxWithAmount
+    const ErrorProduct = Product.data.map((item) => {
+      data.map((items) => {
+        items.productId === item.product_ID;
+        if (
+          items.productId === item.product_ID &&
+          item.available_Quantity <= items.qty
+        ) {
+          items.qtyError = true;
+          items.QTYError = `${item.product_Name} is available only ${item.available_Quantity} QTY but you are trying to get ${items.qty} QTY`;
+        } else {
+          items.qtyError = false;
+          delete items.QTYError;
+        }
       });
     });
   };
@@ -137,7 +75,7 @@ export default function SaleInvoice({
   };
 
   const HandleInvoice = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
     const invoicedata = {
       user_Name: saleData.user_Name,
       phoneNo: saleData.phoneNo,
@@ -147,6 +85,7 @@ export default function SaleInvoice({
 
     const response = await dispatch(AddInvoice(invoicedata));
     await dispatch(AllInvoice(1));
+    await dispatch(AllProduct(1));
     if (response?.payload.message) {
       await dispatch(
         showToast({
@@ -288,7 +227,6 @@ export default function SaleInvoice({
                                         onChange={(e) => HandleSaleData(e)}
                                       />
                                     </div>
-
                                   </div>
                                 </div>
 
@@ -370,7 +308,9 @@ export default function SaleInvoice({
                                                 scope="col"
                                                 className="text-sm font-medium text-gray-900 px-6  border-l border-r"
                                               >
-                                                <span className=""><BiRupee className="inline-block " /></span>
+                                                <span className="">
+                                                  <BiRupee className="inline-block " />
+                                                </span>
                                               </th>
                                               <th
                                                 scope="col"
@@ -382,53 +322,69 @@ export default function SaleInvoice({
                                                 scope="col"
                                                 className="text-sm font-medium text-gray-900 px-6  border-l border-r"
                                               >
-                                                <span className=""><BiRupee className="inline-block " /></span>
+                                                <span className="">
+                                                  <BiRupee className="inline-block " />
+                                                </span>
                                               </th>
                                             </tr>
                                           </thead>
                                           <tbody>
                                             {createInvoiceData.data &&
-                                              createInvoiceData.data.map((item, i) => {
-                                                return (
-                                                  <tr className="border-b">
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r">
-                                                      {i}
-                                                    </td>
-                                                    <td
-                                                      colSpan="2"
-                                                      className="border-r"
-                                                    >
-                                                      <Combobox
-                                                        className="h-full  "
-                                                        as="div"
-                                                        value={item.product_ID}
-                                                        required
+                                              createInvoiceData.data.map(
+                                                (item, i) => {
+                                                  console.log(
+                                                    item,
+                                                    "itemitemitemitem"
+                                                  );
+                                                  return (
+                                                    <tr className="border-b">
+                                                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r">
+                                                        {i}
+                                                      </td>
+                                                      <td
+                                                        colSpan="2"
+                                                        className="border-r"
                                                       >
-                                                        <Combobox.Label className="block text-sm font-medium text-gray-700"></Combobox.Label>
-                                                        <div className="relative h-full">
-                                                          <Combobox.Input
-                                                            className="w-full h-full px-6 py-4 sm:text-sm"
-                                                            name="productId"
-                                                            onChange={(
-                                                              event
-                                                            ) => {
-                                                              setQuery(
-                                                                event.target
-                                                                  .value
-                                                              );
-                                                              handleChange(
-                                                                i,
+                                                        {item.qtyError &&
+                                                          item.QTYError && (
+                                                            <Error
+                                                              content={item.QTYError}
+                                                              active={true}
+                                                            />
+                                                          )}
+                                                        <Combobox
+                                                          className="h-full  "
+                                                          as="div"
+                                                          value={
+                                                            item.product_ID
+                                                          }
+                                                          required
+                                                        >
+                                                          <Combobox.Label className="block text-sm font-medium text-gray-700"></Combobox.Label>
+                                                          <div className="relative h-full">
+                                                            <Combobox.Input
+                                                              className="w-full h-full px-6 py-4 sm:text-sm"
+                                                              name="productId"
+                                                              onChange={(
                                                                 event
-                                                              );
-                                                            }}
-                                                            displayValue={(
-                                                              person
-                                                            ) =>
-                                                              person?.product_ID
-                                                            }
-                                                          />
-                                                          {Product?.data?.length >
-                                                            0 && (
+                                                              ) => {
+                                                                setQuery(
+                                                                  event.target
+                                                                    .value
+                                                                );
+                                                                handleChange(
+                                                                  i,
+                                                                  event
+                                                                );
+                                                              }}
+                                                              displayValue={(
+                                                                person
+                                                              ) =>
+                                                                person?.product_ID
+                                                              }
+                                                            />
+                                                            {Product?.data
+                                                              ?.length > 0 && (
                                                               <Combobox.Options className="absolute z-[99999] custom-scroll max-h-[118px] mt-1 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                                                 {Product?.data?.map(
                                                                   (person) => (
@@ -474,7 +430,7 @@ export default function SaleInvoice({
                                                                             className={classNames(
                                                                               "block truncate text-left",
                                                                               selected &&
-                                                                              "font-semibold"
+                                                                                "font-semibold"
                                                                             )}
                                                                           >
                                                                             {
@@ -488,91 +444,95 @@ export default function SaleInvoice({
                                                                 )}
                                                               </Combobox.Options>
                                                             )}
-                                                        </div>
-                                                      </Combobox>
-                                                    </td>
-                                                    <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
-                                                      <input
-                                                        type="number"
-                                                        name="qty"
-                                                        required
-                                                        className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
-                                                        onChange={(e) =>
-                                                          handleChange(i, e)
-                                                        }
-                                                      />
-                                                    </td>
-                                                    <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
-                                                      <input
-                                                        type="number"
-                                                        name="priceWithTax"
-                                                        required
-                                                        onChange={(e) =>
-                                                          handleChange(i, e)
-                                                        }
-                                                        className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
-                                                      />
-                                                    </td>
-                                                    <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
-                                                      <input
-                                                        name="discountWithPercentage"
-                                                        type="number"
-                                                        disabled={Boolean(
-                                                          item.discountWithAmount
-                                                        )}
-                                                        onChange={(e) =>
-                                                          handleChange(i, e)
-                                                        }
-                                                        className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
-                                                      />
-                                                    </td>
-                                                    <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
-                                                      <input
-                                                        name="discountWithAmount"
-                                                        type="number"
-                                                        disabled={Boolean(
-                                                          item.discountWithPercentage
-                                                        )}
-                                                        onChange={(e) =>
-                                                          handleChange(i, e)
-                                                        }
-                                                        className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
-                                                      />
-                                                    </td>
-                                                    <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
-                                                      <input
-                                                        name="taxWithPercentage"
-                                                        type="number"
-                                                        disabled={Boolean(
-                                                          item.taxWithAmount
-                                                        )}
-                                                        onChange={(e) =>
-                                                          handleChange(i, e)
-                                                        }
-                                                        className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
-                                                      />
-                                                    </td>
-                                                    <td className="text-sm text-center text-gray-900 font-light whitespace-nowrap border-r">
-                                                      <input
-                                                        name="taxWithAmount"
-                                                        type="number"
-                                                        disabled={Boolean(
-                                                          item.taxWithPercentage
-                                                        )}
-                                                        onChange={(e) =>
-                                                          handleChange(i, e)
-                                                        }
-                                                        className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
-                                                      />
-                                                    </td>
-                                                    <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
-
-                                                      {item?.TotalAmount ? formatCurrency(item?.TotalAmount, 'INR') : ""}
-
-                                                    </td>
-                                                  </tr>
-                                                );
-                                              })}
+                                                          </div>
+                                                        </Combobox>
+                                                      </td>
+                                                      <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                        <input
+                                                          type="number"
+                                                          name="qty"
+                                                          required
+                                                          className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                          onChange={(e) =>
+                                                            handleChange(i, e)
+                                                          }
+                                                        />
+                                                      </td>
+                                                      <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                        <input
+                                                          type="number"
+                                                          name="priceWithTax"
+                                                          required
+                                                          onChange={(e) =>
+                                                            handleChange(i, e)
+                                                          }
+                                                          className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                        />
+                                                      </td>
+                                                      <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                        <input
+                                                          name="discountWithPercentage"
+                                                          type="number"
+                                                          disabled={Boolean(
+                                                            item.discountWithAmount
+                                                          )}
+                                                          onChange={(e) =>
+                                                            handleChange(i, e)
+                                                          }
+                                                          className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                        />
+                                                      </td>
+                                                      <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                        <input
+                                                          name="discountWithAmount"
+                                                          type="number"
+                                                          disabled={Boolean(
+                                                            item.discountWithPercentage
+                                                          )}
+                                                          onChange={(e) =>
+                                                            handleChange(i, e)
+                                                          }
+                                                          className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                        />
+                                                      </td>
+                                                      <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                        <input
+                                                          name="taxWithPercentage"
+                                                          type="number"
+                                                          disabled={Boolean(
+                                                            item.taxWithAmount
+                                                          )}
+                                                          onChange={(e) =>
+                                                            handleChange(i, e)
+                                                          }
+                                                          className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                        />
+                                                      </td>
+                                                      <td className="text-sm text-center text-gray-900 font-light whitespace-nowrap border-r">
+                                                        <input
+                                                          name="taxWithAmount"
+                                                          type="number"
+                                                          disabled={Boolean(
+                                                            item.taxWithPercentage
+                                                          )}
+                                                          onChange={(e) =>
+                                                            handleChange(i, e)
+                                                          }
+                                                          className="text-sm text-center text-gray-900 font-light h-full w-full px-6 py-4 "
+                                                        />
+                                                      </td>
+                                                      <td className="text-sm text-gray-900 font-light whitespace-nowrap border-r">
+                                                        {item?.TotalAmount
+                                                          ? formatCurrency(
+                                                              item?.TotalAmount,
+                                                              "INR"
+                                                            )
+                                                          : ""}
+                                                      </td>
+                                                    </tr>
+                                                  );
+                                                }
+                                              )}
                                             <tr className="bg-white border-b">
                                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 "></td>
                                               <td
@@ -582,23 +542,43 @@ export default function SaleInvoice({
                                                 Total
                                               </td>
                                               <td className=" border-r whitespace-nowrap px-3 font-semibold py-4 text-sm text-gray-900">
-                                                {createInvoiceData?.SubTotal.totalQTY}
+                                                {
+                                                  createInvoiceData?.SubTotal
+                                                    .totalQTY
+                                                }
                                               </td>
                                               <td className="border-r whitespace-nowrap px-3 font-semibold py-4 text-sm text-gray-900">
-                                                {createInvoiceData?.SubTotal.price}
+                                                {
+                                                  createInvoiceData?.SubTotal
+                                                    .price
+                                                }
                                               </td>
                                               <td
                                                 colSpan="2"
-                                                className="border-r whitespace-nowrap px-3 font-semibold py-4 text-sm text-gray-900">
-                                                {formatCurrency(createInvoiceData?.total.DiscountSum, 'INR')}
+                                                className="border-r whitespace-nowrap px-3 font-semibold py-4 text-sm text-gray-900"
+                                              >
+                                                {formatCurrency(
+                                                  createInvoiceData?.total
+                                                    .DiscountSum,
+                                                  "INR"
+                                                )}
                                               </td>
                                               <td
                                                 colSpan="2"
-                                                className="border-r whitespace-nowrap px-3 font-semibold py-4 text-sm text-gray-900">
-                                                {formatCurrency(createInvoiceData?.total.GSTSum, 'INR')}
+                                                className="border-r whitespace-nowrap px-3 font-semibold py-4 text-sm text-gray-900"
+                                              >
+                                                {formatCurrency(
+                                                  createInvoiceData?.total
+                                                    .GSTSum,
+                                                  "INR"
+                                                )}
                                               </td>
                                               <td className=" whitespace-nowrap px-3 font-semibold py-4 text-sm text-gray-900">
-                                                {formatCurrency(createInvoiceData?.total.AmountSum, 'INR')}
+                                                {formatCurrency(
+                                                  createInvoiceData?.total
+                                                    .AmountSum,
+                                                  "INR"
+                                                )}
                                               </td>
                                             </tr>
                                           </tbody>
